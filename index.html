@@ -1,29 +1,29 @@
 <html lang="es"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-Drama Tracker Pro</title>
+    <title>K-Drama Tracker Ultimate Pro</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#7e57c2">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163665.png">
+    <link class="data-injector-script" rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163665.png">
 
     <style>
         :root {
             --bg-main: #f0f4f8;
             --bg-card: #ffffff;
-            --primary: #b39ddb; /* Morado Pastel */
+            --primary: #b39ddb;
             --primary-dark: #7e57c2;
-            --secondary: #f8bbd0; /* Rosa Pastel */
-            --accent-yellow: #ffca28; /* Amarillo Estrella */
+            --secondary: #f8bbd0;
+            --accent-yellow: #ffca28;
             --text-main: #37474f;
             --text-muted: #78909c;
             --mint-pastel: #e0f2f1;
             --success: #81c784;
             --danger: #e57373;
             --orange-hot: #ff7043;
+            --blue-info: #4fc3f7;
         }
 
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -32,180 +32,166 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             margin: 0;
-            padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+            padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
         }
 
-        /* CABECERA CON MASCOTA ANIMADA */
         header {
             background: linear-gradient(135deg, #fbcfe8 0%, #e0f2fe 50%, #e8f5e9 100%);
-            padding: 30px 15px;
+            padding: 25px 15px;
             text-align: center;
             border-bottom-left-radius: 30px;
             border-bottom-right-radius: 30px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.06);
             position: relative;
-            overflow: hidden;
         }
 
         .mascot-container {
-            width: 75px;
-            height: 70px;
-            margin: 0 auto 10px auto;
+            width: 70px;
+            height: 65px;
+            margin: 0 auto 8px auto;
             position: relative;
             animation: bounce 3s infinite ease-in-out;
         }
 
         .mochi-body {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             background: radial-gradient(circle at 35% 35%, #ffffff, #ffebf0 40%, #ffccd8 80%);
             border-radius: 50% 50% 45% 45%;
             box-shadow: inset -5px -8px 12px rgba(233, 30, 99, 0.2), 0 8px 15px rgba(0,0,0,0.1);
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center; position: relative;
         }
+        .mochi-eyes { display: flex; gap: 20px; position: absolute; top: 30px; animation: blink 4s infinite linear; }
+        .mochi-eye { width: 7px; height: 7px; background-color: #2c3e50; border-radius: 50%; }
+        .mochi-blush { display: flex; gap: 32px; position: absolute; top: 36px; }
+        .mochi-cheek { width: 10px; height: 5px; background-color: #ff8a9a; border-radius: 50%; filter: blur(1px); }
+        .mochi-mouth { width: 8px; height: 5px; border: 2px solid #2c3e50; border-top: none; border-radius: 0 0 10px 10px; position: absolute; top: 36px; }
+        .mochi-crown { position: absolute; top: -6px; font-size: 1.1rem; transform: rotate(-15deg); }
 
-        .mochi-eyes { display: flex; gap: 22px; position: absolute; top: 32px; animation: blink 4s infinite linear; }
-        .mochi-eye { width: 8px; height: 8px; background-color: #2c3e50; border-radius: 50%; }
-        .mochi-blush { display: flex; gap: 36px; position: absolute; top: 38px; }
-        .mochi-cheek { width: 12px; height: 6px; background-color: #ff8a9a; border-radius: 50%; filter: blur(1px); }
-        .mochi-mouth { width: 8px; height: 6px; border: 2px solid #2c3e50; border-top: none; border-radius: 0 0 10px 10px; position: absolute; top: 38px; }
-        .mochi-crown { position: absolute; top: -5px; font-size: 1.2rem; transform: rotate(-15deg); filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1)); }
+        header h1 { margin: 5px 0 0 0; color: #4a148c; font-size: 1.6rem; font-weight: 850; }
+        header p { margin: 5px 0 0 0; color: #6a1b9a; font-size: 0.85rem; font-weight: 600; background: rgba(255,255,255,0.5); display: inline-block; padding: 4px 12px; border-radius: 20px; }
 
-        header h1 { margin: 5px 0 0 0; color: #4a148c; font-size: 1.8rem; font-weight: 850; letter-spacing: -0.5px; }
-        header p { margin: 5px 0 0 0; color: #6a1b9a; font-size: 0.9rem; font-weight: 600; background: rgba(255,255,255,0.4); display: inline-block; padding: 4px 12px; border-radius: 20px; }
+        .global-search-box {
+            max-width: 600px; margin: 15px auto 5px auto; padding: 0 15px; position: relative;
+        }
+        .global-search-box input {
+            width: 100%; padding: 14px 14px 14px 45px; border-radius: 25px; border: 2px solid #d1d5db;
+            background-color: #ffffff; font-size: 1rem; outline: none; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .global-search-box .search-icon { position: absolute; left: 30px; top: 15px; font-size: 1.1rem; color: var(--text-muted); }
 
-        /* CONTENEDOR ADAPTABLE */
-        .section-content { display: none; padding: 20px 15px; max-width: 1200px; margin: 0 auto; }
+        .section-content { display: none; padding: 15px; max-width: 1200px; margin: 0 auto; }
         .section-content.active { display: block; }
 
         .ui-card {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            background: var(--bg-card); border-radius: 24px; padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(149, 157, 165, 0.08); border: 1px solid rgba(226, 232, 240, 0.8);
         }
-        .ui-card h2 { margin-top: 0; font-size: 1.3rem; color: #263238; display: flex; align-items: center; gap: 10px; }
+        .ui-card h2 { margin-top: 0; font-size: 1.25rem; color: #263238; display: flex; align-items: center; gap: 8px; }
 
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 6px; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
+        .badge-counter-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 15px;
+        }
+        .counter-pill {
+            background: #edf2f7; padding: 10px; border-radius: 14px; text-align: center; font-size: 0.85rem; font-weight: 700; color: #4a5568;
+        }
+        .counter-pill span { display: block; font-size: 1.4rem; color: var(--primary-dark); margin-top: 2px; }
+
+        .form-group { margin-bottom: 12px; }
+        .dynamic-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+        label { display: block; margin-bottom: 4px; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
         input, select, textarea {
-            width: 100%; padding: 12px; border-radius: 16px;
-            border: 2px solid #e2e8f0; background-color: #f8fafc;
-            color: var(--text-main); font-size: 0.95rem; outline: none;
-            transition: all 0.2s;
+            width: 100%; padding: 11px; border-radius: 14px; border: 2px solid #e2e8f0; background-color: #f8fafc;
+            color: var(--text-main); font-size: 0.9rem; outline: none; transition: all 0.2s;
         }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary-dark); background-color: #fff; box-shadow: 0 0 8px rgba(179,157,219,0.3); }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary-dark); background-color: #fff; }
 
-        /* BUSCADOR */
-        .search-container { margin-bottom: 20px; position: relative; }
-        .search-container input { padding-left: 40px; border-radius: 20px; background-color: #ffffff; }
-        .search-icon { position: absolute; left: 15px; top: 14px; font-size: 1.1rem; color: var(--text-muted); }
+        .sub-btn-add {
+            background: #f3e5f5; color: #7e57c2; border: none; padding: 6px 12px; border-radius: 10px;
+            font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-top: 4px; display: inline-block;
+        }
 
-        .rating-container { display: flex; gap: 6px; padding: 4px 0; overflow-x: auto; }
-        .star-btn { font-size: 1.6rem; cursor: pointer; background: none; border: none; padding: 0; color: #e2e8f0; transition: transform 0.1s; }
-        .star-btn:active { transform: scale(1.3); }
-        .star-btn.active { color: var(--accent-yellow); text-shadow: 0 0 4px rgba(255,202,40,0.5); }
+        .rating-container { display: flex; gap: 4px; padding: 4px 0; overflow-x: auto; }
+        .star-btn { font-size: 1.5rem; cursor: pointer; background: none; border: none; color: #e2e8f0; }
+        .star-btn.active { color: var(--accent-yellow); }
 
         .btn {
             background: linear-gradient(135deg, var(--primary), #9575cd); color: white; border: none;
-            padding: 14px; border-radius: 16px; font-weight: 700; width: 100%; cursor: pointer; font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(179,157,219,0.4); transition: all 0.2s;
+            padding: 12px; border-radius: 14px; font-weight: 700; width: 100%; cursor: pointer; font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(179,157,219,0.3); transition: all 0.2s;
         }
-        .btn:active { transform: scale(0.97); }
-        .btn-danger { background: linear-gradient(135deg, #ff8a80, #ff5252); box-shadow: 0 4px 12px rgba(255,82,82,0.3); }
-        .btn-success { background: linear-gradient(135deg, #81c784, #66bb6a); color: white; box-shadow: 0 4px 12px rgba(129,199,132,0.3); }
-        .btn-secondary { background: linear-gradient(135deg, #e1f5fe, #b3e5fc); color: #0277bd; box-shadow: 0 4px 12px rgba(179,229,252,0.4); }
+        .btn-danger { background: linear-gradient(135deg, #ff8a80, #ff5252); box-shadow: 0 4px 12px rgba(255,82,82,0.2); }
+        .btn-success { background: linear-gradient(135deg, #81c784, #66bb6a); box-shadow: 0 4px 12px rgba(129,199,132,0.2); }
+        .btn-secondary { background: #e2e8f0; color: #4a5568; box-shadow: none; }
 
-        .file-label-btn {
-            display: block; background: linear-gradient(135deg, #e0f2f1, #b2dfdb); color: #004d40;
-            padding: 14px; border-radius: 16px; font-weight: 700; text-align: center; cursor: pointer; font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(178,223,219,0.4); transition: all 0.2s;
-        }
-
-        /* RE-DISEÑO DE LISTA MULTI-COLUMNA */
-        .kdrama-list { display: grid; grid-template-columns: 1fr; gap: 20px; }
-
+        .kdrama-list { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .kdrama-item {
-            background: var(--bg-card); border-radius: 24px; padding: 18px;
-            display: flex; gap: 20px; position: relative; border: 2px solid transparent;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.03); transition: all 0.3s ease; align-items: flex-start;
+            background: var(--bg-card); border-radius: 20px; padding: 15px; display: flex; gap: 15px;
+            position: relative; box-shadow: 0 6px 18px rgba(0,0,0,0.02); border: 1px solid #edf2f7;
         }
-
         .kdrama-item img {
-            width: 120px; height: 170px; object-fit: cover; border-radius: 18px; background-color: #edf2f7;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.08); flex-shrink: 0;
+            width: 110px; height: 160px; object-fit: cover; border-radius: 14px; background-color: #edf2f7; flex-shrink: 0;
         }
-
         .kdrama-info { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .kdrama-info h3 { margin: 0 0 6px 0; font-size: 1.3rem; color: #263238; font-weight: 700; line-height: 1.2; }
-        .kdrama-dates { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
-        .kdrama-actors { font-size: 0.85rem; color: #5e35b1; margin-bottom: 6px; font-weight: 700; background: #f3e5f5; display: inline-block; padding: 3px 8px; border-radius: 8px; }
-        .kdrama-stars { color: var(--accent-yellow); font-size: 1.1rem; margin-bottom: 8px; letter-spacing: 2px; }
-        .kdrama-summary { font-size: 0.9rem; color: #546e7a; line-height: 1.5; text-align: justify; }
+        .kdrama-info h3 { margin: 0 0 4px 0; font-size: 1.15rem; color: #263238; font-weight: 700; }
+        .season-badge-container { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 5px; }
+        .season-mini-pill { font-size: 0.75rem; background: #e0f2f1; color: #004d40; padding: 2px 6px; border-radius: 6px; font-weight: 600; }
+        .actor-tag-container { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+        .actor-mini-pill { font-size: 0.75rem; background: #f3e5f5; color: #4a148c; padding: 2px 6px; border-radius: 6px; font-weight: 700; }
+        .kdrama-stars { color: var(--accent-yellow); font-size: 1rem; margin-bottom: 5px; }
+        .kdrama-summary { font-size: 0.85rem; color: #546e7a; line-height: 1.4; text-align: justify; }
 
-        /* ACCIONES DE LA TARJETA */
-        .card-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 6px; }
+        .card-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 4px; }
         .action-btn {
-            border: none; width: 32px; height: 32px; border-radius: 50%; font-weight: bold;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s;
+            border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;
         }
         .btn-delete-card { background: #ffebee; color: #ff5252; }
         .btn-edit-card { background: #e8eaf6; color: #3f51b5; }
-        .action-btn:hover { transform: scale(1.1); }
+        .btn-copy-card { background: #e0f7fa; color: #006064; }
 
-        .top-badge { padding: 4px 9px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; margin-right: 8px; color: white; }
+        .top-badge { padding: 3px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; color: white; display: inline-block; }
         .top-badge.gold { background: linear-gradient(45deg, #ffd700, #ffa000); }
-        .top-badge.actor-count { background: linear-gradient(45deg, #7e57c2, #b39ddb); }
-        .top-badge.hot-status { background: linear-gradient(135deg, var(--orange-hot), #ff3d00); box-shadow: 0 2px 6px rgba(255,61,0,0.4); animation: pulse 2s infinite; }
+        .top-badge.hot-status { background: var(--orange-hot); animation: pulse 2s infinite; }
+
+        .flex-row-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 4px; border-bottom: 1px dashed #e2e8f0; font-size: 0.9rem; gap: 10px; }
         
-        .date-badge { background: #e0f2f1; color: #00796b; padding: 4px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; }
-        .flex-row-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 5px; border-bottom: 1px dashed #cfd8dc; font-size: 1rem; }
-        .flex-row-item:last-child { border-bottom: none; }
+        .other-item { background: #ffffff; border-left: 5px solid var(--primary); border-radius: 16px; padding: 15px; margin-bottom: 12px; position: relative; display: flex; gap: 12px; }
+        .other-item img { width: 70px; height: 95px; object-fit: cover; border-radius: 8px; background: #f7fafc; flex-shrink: 0; }
 
-        /* ESTILOS PARA OTROS CONTENIDOS (SIN IMÁGENES) */
-        .other-item { background: #ffffff; border-left: 6px solid var(--primary); border-radius: 16px; padding: 15px; margin-bottom: 12px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
-        .other-type-badge { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; background: #eceff1; color: #455a64; display: inline-block; margin-bottom: 6px; }
-
-        /* NAVEGACIÓN ADAPTABLE CON SOPORTE PARA "NOTCH" */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            height: calc(70px + env(safe-area-inset-bottom, 0px));
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-            background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
-            display: flex; justify-content: space-around; align-items: center;
-            border-top: 1px solid rgba(207, 216, 220, 0.5); z-index: 100;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+        .dedup-alert-box {
+            background: #fff9db; border: 1px solid #f59f00; border-radius: 14px; padding: 15px; margin-bottom: 15px; font-size: 0.85rem; display: none; position: relative;
         }
-        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; gap: 4px; }
-        .nav-item.active { color: var(--primary-dark); transform: translateY(-2px); }
-        .nav-item span { font-size: 1.3rem; }
 
-        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        /* CONTROLES DE CAPÍTULOS PARA PENDIENTES */
+        .chapter-badge-control {
+            display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; padding: 3px 8px; border-radius: 10px; border: 1px solid #cbd5e1;
+        }
+        .chapter-badge-control span { font-size: 0.75rem; font-weight: 800; color: #475569; min-width: 48px; text-align: center; }
+        .chapter-btn-mini { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; width: 20px; height: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #334155; }
+        .chapter-btn-mini:active { background: #e2e8f0; }
 
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; height: calc(65px + env(safe-area-inset-bottom, 0px));
+            padding-bottom: env(safe-area-inset-bottom, 0px); background-color: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid #e2e8f0; z-index: 100; box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
+        }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 0.7rem; font-weight: 700; cursor: pointer; gap: 2px; }
+        .nav-item.active { color: var(--primary-dark); transform: translateY(-1px); }
+        .nav-item span { font-size: 1.25rem; }
+
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         @media (min-width: 768px) {
-            body { padding-bottom: 30px; padding-top: 80px; }
-            .bottom-nav { top: 0; bottom: auto; height: 65px; padding-bottom: 0; justify-content: center; gap: 40px; border-top: none; border-bottom: 1px solid rgba(207, 216, 220, 0.5); }
-            header { border-radius: 0 0 40px 40px; margin-top: -15px; }
+            body { padding-bottom: 20px; padding-top: 75px; }
+            .bottom-nav { top: 0; bottom: auto; height: 60px; padding-bottom: 0; justify-content: center; gap: 35px; border-top: none; border-bottom: 1px solid #e2e8f0; }
             .kdrama-list { grid-template-columns: 1fr 1fr; }
-            .dashboard-grid { grid-template-columns: 1fr 1fr; }
         }
         @media (min-width: 1100px) { .kdrama-list { grid-template-columns: 1fr 1fr 1fr; } }
-
-        @keyframes bounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-6px) scale(1.02); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
     </style>
 </head>
 <body>
-
-    <datalist id="actors-suggestions"></datalist>
-    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
 
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchTab('sec1', 'Sección 1: Mi Colección', this)"><span>🎬</span>Colección</button>
@@ -224,12 +210,22 @@
                 <div class="mochi-mouth"></div>
             </div>
         </div>
-        <h1 id="header-title">Mis K-Dramas</h1>
+        <h1 id="header-title">K-Drama Tracker</h1>
         <p id="header-subtitle">Sección 1: Mi Colección</p>
     </header>
 
+    <div class="global-search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search-bar" placeholder="Buscador Global: Encuentra cualquier serie, actor, película o estreno...">
+    </div>
+
     <div id="sec1" class="section-content active">
-        <div class="ui-card" style="max-width: 600px; margin: 0 auto 25px auto;">
+        <div class="badge-counter-grid">
+            <div class="counter-pill">Total en Colección <span id="count-sec1-total">0</span></div>
+            <div class="counter-pill">Con Continuación 🔄 <span id="count-sec1-hot">0</span></div>
+        </div>
+
+        <div class="ui-card" style="max-width: 600px; margin: 0 auto 20px auto;">
             <h2 id="form-heading">📝 Añadir Nuevo K-Drama Visto</h2>
             <form id="drama-form">
                 <input type="hidden" id="edit-id" value="">
@@ -238,26 +234,27 @@
                     <input type="text" id="title" required="" placeholder="Ej. Goblin o Twenty-Five Twenty-One">
                 </div>
                 
-                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                    <div>
-                        <label for="actor1">Actor Principal 1</label>
-                        <input type="text" id="actor1" list="actors-suggestions" placeholder="Ej. Gong Yoo" required="">
+                <div class="form-group">
+                    <label>Elenco / Actores Principales</label>
+                    <div id="actors-dynamic-container">
+                        <div class="dynamic-row"><input type="text" class="actor-input" required="" placeholder="Actor Principal 1"></div>
+                        <div class="dynamic-row"><input type="text" class="actor-input" required="" placeholder="Actor Principal 2"></div>
                     </div>
-                    <div>
-                        <label for="actor2">Actor Principal 2</label>
-                        <input type="text" id="actor2" list="actors-suggestions" placeholder="Ej. Kim Go-eun" required="">
-                    </div>
+                    <button type="button" class="sub-btn-add" onclick="addActorField()">+ Añadir Actor</button>
                 </div>
 
-                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                    <div>
-                        <label for="start-date">Año / Fecha Estreno</label>
-                        <input type="text" id="start-date" placeholder="Ej. 2024 o 09/06/24">
+                <div class="form-group">
+                    <label>Temporadas y Fechas (DD/MM/AA)</label>
+                    <div id="seasons-dynamic-container">
+                        <div class="ui-card" style="padding:10px; margin-bottom:8px; background:#f8fafc;">
+                            <span style="font-size:0.8rem; font-weight:bold; color:var(--primary-dark);">Temporada 1</span>
+                            <div class="dynamic-row" style="margin-top:4px;">
+                                <input type="text" class="season-start" placeholder="Estreno (Ej: 12/03/16)">
+                                <input type="text" class="season-end" placeholder="Finalización (Ej: 05/05/16)">
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label for="end-date">Finalización</label>
-                        <input type="text" id="end-date" placeholder="Ej. 2024 o 15/07/24">
-                    </div>
+                    <button type="button" class="sub-btn-add" onclick="addSeasonField()">+ Registrar Otra Temporada</button>
                 </div>
 
                 <div class="form-group">
@@ -273,57 +270,67 @@
                     <div class="rating-container" id="stars-picker"></div>
                 </div>
                 <div class="form-group">
-                    <label id="img-label" for="img-input">Póster / Imagen</label>
+                    <label for="img-input">Póster / Imagen (Obligatorio)</label>
                     <input type="file" id="img-input" accept="image/*">
                 </div>
                 <div class="form-group">
-                    <label for="summary">Resumen de la Serie</label>
-                    <textarea id="summary" rows="3" placeholder="Escribe aquí tu opinión, resumen o sinopsis..."></textarea>
+                    <label for="summary">Resumen / Notas Personales</label>
+                    <textarea id="summary" rows="3" placeholder="Escribe tu opinión..."></textarea>
                 </div>
                 <button type="submit" id="btn-submit-main" class="btn">Guardar en Colección</button>
-                <button type="button" id="btn-cancel-edit" class="btn btn-secondary" style="display:none; margin-top:8px;">Cancelar Edición</button>
+                <button type="button" id="btn-cancel-edit" class="btn btn-secondary" style="display:none; margin-top:8px;" onclick="cancelMainEdit()">Cancelar Edición</button>
             </form>
         </div>
 
-        <div class="search-container" style="max-width: 600px; margin: 0 auto 20px auto;">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="search-bar" placeholder="Buscar K-Drama por título o actor..." aria-label="Buscar series en tu colección">
-        </div>
-
-        <h2 style="text-align: center; margin-top: 10px; color: #4a148c;">🎬 Series Guardadas</h2>
+        <h2 style="text-align: center; color: #4a148c; margin-bottom:10px;">🎬 Series Guardadas</h2>
         <div class="kdrama-list" id="kdrama-display"></div>
     </div>
 
     <div id="sec2" class="section-content">
-        <div class="dashboard-grid" style="max-width: 1000px; margin: 0 auto;">
+        <div class="badge-counter-grid">
+            <div class="counter-pill">Total Rankeados <span id="count-sec2-total">0</span></div>
+        </div>
+
+        <div class="dedup-alert-box" id="dedup-box">
+            <button type="button" style="position:absolute; right:12px; top:12px; background:none; border:none; font-size:1.2rem; font-weight:bold; color:#d97706; cursor:pointer;" onclick="dismissDedupAlert()">×</button>
+            <b style="color:#e67e22;">💡 Sugerencia Opcional de Limpieza:</b>
+            <p id="dedup-text" style="margin:8px 0 12px 0; padding-right:20px; line-height:1.4;"></p>
+            <button class="btn btn-success" style="padding:8px 14px; font-size:0.8rem; width:auto; display:inline-block;" id="dedup-action-btn">Unificar nombres automáticamente</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
             <div class="ui-card">
-                <h2>🏆 Top 5 de K-Dramas (Mejor Evaluados)</h2>
-                <div id="top-list"></div>
+                <h2>🏆 Top 20 de K-Dramas (Mejores Evaluados)</h2>
+                <div id="top-list-20"></div>
             </div>
             <div class="ui-card">
-                <h2>🌟 Top Actores (Más Vistos y Nivel)</h2>
-                <p style="color: var(--text-muted); font-size: 0.8rem; margin-top:-8px; margin-bottom:15px;">Calculado automáticamente según tu historial.</p>
+                <h2>🌟 Panel General de Actores Vistos</h2>
                 <div id="top-actors-list"></div>
             </div>
         </div>
     </div>
 
     <div id="sec3" class="section-content">
-        <div class="dashboard-grid">
+        <div class="badge-counter-grid">
+            <div class="counter-pill">Por Ver <span id="count-sec3-watch">0</span></div>
+            <div class="counter-pill">Estrenos <span id="count-sec3-coming">0</span></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
             <div class="ui-card">
-                <h2>👀 Próximos Por Ver (Pendientes)</h2>
-                <form id="watchlist-form" style="display: flex; gap: 6px; margin-bottom: 15px;">
-                    <input type="text" id="watchlist-title" required="" placeholder="Serie que quieres ver" style="flex:2;">
+                <h2>👀 Lista de Pendientes (Por Ver)</h2>
+                <form id="watchlist-form" style="display: flex; gap: 6px; margin-bottom: 12px;">
+                    <input type="text" id="watchlist-title" required="" placeholder="Nombre del K-Drama pendiente..." style="flex:2;">
                     <button type="submit" class="btn" style="width: auto; padding: 0 20px;">+</button>
                 </form>
                 <div id="watchlist-display"></div>
             </div>
 
             <div class="ui-card">
-                <h2>📅 Próximos Estrenos / Lanzamientos</h2>
-                <form id="coming-form" style="display: flex; gap: 6px; margin-bottom: 15px;">
-                    <input type="text" id="coming-title" required="" placeholder="Nombre del estreno" style="flex:2;">
-                    <input type="text" id="coming-date" required="" placeholder="Ej: Dic 2026" style="flex:1;">
+                <h2>📅 Próximos Estrenos Añadidos</h2>
+                <form id="coming-form" style="display: flex; gap: 6px; margin-bottom: 12px;">
+                    <input type="text" id="coming-title" required="" placeholder="Título del estreno..." style="flex:2;">
+                    <input type="text" id="coming-date" required="" placeholder="Fecha/Mes" style="flex:1;">
                     <button type="submit" class="btn" style="width: auto; padding: 0 15px;">+</button>
                 </form>
                 <div id="coming-list"></div>
@@ -332,10 +339,16 @@
     </div>
 
     <div id="sec5" class="section-content">
-        <div class="ui-card" style="max-width: 600px; margin: 0 auto 25px auto;">
-            <h2>🍿 Registrar Película o Contenido Externo</h2>
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top:-8px; margin-bottom:15px;">Estas categorías no requieren imágenes para ahorrar memoria.</p>
+        <div class="badge-counter-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="counter-pill">Películas KDrama <span id="count-sec5-peli-kd">0</span></div>
+            <div class="counter-pill">Películas Gral <span id="count-sec5-peli-gr">0</span></div>
+            <div class="counter-pill">Series Ext. <span id="count-sec5-series">0</span></div>
+        </div>
+
+        <div class="ui-card" style="max-width: 600px; margin: 0 auto 20px auto;">
+            <h2 id="form-heading-other">🍿 Registrar Contenido Externo</h2>
             <form id="other-content-form">
+                <input type="hidden" id="edit-id-other" value="">
                 <div class="form-group">
                     <label for="other-title">Título</label>
                     <input type="text" id="other-title" required="" placeholder="Ej. Parasite o Stranger Things">
@@ -343,7 +356,7 @@
                 <div class="form-group">
                     <label for="other-category">Categoría / Tipo</label>
                     <select id="other-category">
-                        <option value="Película K-Drama">Película de K-Drama 🇰🇷🎬</option>
+                        <option value="Película de K-Drama">Película de K-Drama 🇰🇷🎬</option>
                         <option value="Película General">Película General / Internacional 🍿</option>
                         <option value="Serie Externa">Serie Externa (No Asiática) 📺</option>
                     </select>
@@ -364,86 +377,58 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="other-notes">Notas / Opinión Breve</label>
-                    <textarea id="other-notes" rows="2" placeholder="Escribe detalles del elenco, año o qué te pareció..."></textarea>
+                    <label for="other-img-input">Imagen de Portada (Opcional)</label>
+                    <input type="file" id="other-img-input" accept="image/*">
                 </div>
-                <button type="submit" class="btn">Guardar Registro</button>
+                <div class="form-group">
+                    <label for="other-notes">Notas u Opinión Corta</label>
+                    <textarea id="other-notes" rows="2" placeholder="Escribe tus comentarios..."></textarea>
+                </div>
+                <button type="submit" id="btn-submit-other" class="btn">Guardar Registro</button>
+                <button type="button" id="btn-cancel-other" class="btn btn-secondary" style="display:none; margin-top:8px;" onclick="cancelOtherEdit()">Cancelar Edición</button>
             </form>
         </div>
 
-        <h2 style="text-align: center; color: #4a148c;">🍿 Historial de Películas y Otros</h2>
-        <div id="other-contents-display" style="max-width: 600px; margin: 0 auto;"></div>
+        <h2 style="text-align: center; color: #4a148c; margin-bottom:10px;">🍿 Historial Registrado</h2>
+        <div id="other-contents-display" style="max-width: 700px; margin: 0 auto;"></div>
     </div>
 
     <div id="sec4" class="section-content">
         <div style="max-width: 500px; margin: 0 auto;">
             <div class="ui-card" style="text-align: center;">
-                <h2>💾 Guardar en el Teléfono</h2>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Asegura los datos inmediatamente en la memoria local (`LocalStorage`).</p>
-                <button class="btn btn-success" onclick="saveLocalStorageLocal()">✨ Asegurar Datos Localmente</button>
+                <h2>📦 Guardado de Respaldo</h2>
+                <button class="btn btn-success" onclick="exportDataApp()">📥 Exportar Copia de Respaldo (.html)</button>
             </div>
-
-            <div class="ui-card" style="text-align: center; border: 2px solid var(--primary);">
-                <h2>📦 Copias de Seguridad (Mudanza)</h2>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Exporta un archivo con tus K-Dramas para moverlos de dispositivo, o importa un respaldo anterior.</p>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <button class="btn" onclick="exportDataApp()">📥 Exportar Copia (.html)</button>
-                    <label for="import-file" class="file-label-btn">📤 Importar Copia de Seguridad</label>
-                    <input type="file" id="import-file" accept=".html" onchange="importarArchivoRespaldo(event)" style="display: none;">
-                </div>
-            </div>
-
-            <div class="ui-card" style="border: 2px dashed #ff8a80; text-align: center; background: #fffbfa;">
-                <h2 style="color: #ff5252;">🗑️ Limpiar Memoria</h2>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Esto restablecerá la app eliminando todos los registros guardados en este navegador.</p>
-                <button class="btn btn-danger" onclick="clearAllData()">Borrar Datos de Dispositivo</button>
+            <div class="ui-card" style="border: 2px dashed #ff8a80; text-align: center;">
+                <h2 style="color: #ff5252;">🗑️ Restablecer Memoria</h2>
+                <button class="btn btn-danger" onclick="clearAllData()">Borrar Datos Completos</button>
             </div>
         </div>
     </div>
 
     <script>
         let currentRating = 0;
-        let dbDramas = JSON.parse(localStorage.getItem('kd_data_dramas')) || [];
-        let dbComing = JSON.parse(localStorage.getItem('kd_data_coming')) || [];
-        let dbWatchlist = JSON.parse(localStorage.getItem('kd_data_watchlist')) || [];
-        let dbOthers = JSON.parse(localStorage.getItem('kd_data_others')) || []; // Base de datos nueva
+        let isDedupDismissed = false; 
+        let dbDramas = JSON.parse(localStorage.getItem('kd_db_ultimate_dramas')) || [];
+        let dbComing = JSON.parse(localStorage.getItem('kd_db_ultimate_coming')) || [];
+        let dbWatchlist = JSON.parse(localStorage.getItem('kd_db_ultimate_watchlist')) || [];
+        let dbOthers = JSON.parse(localStorage.getItem('kd_db_ultimate_others')) || [];
 
         document.addEventListener('DOMContentLoaded', () => {
             initStarsPicker();
-            renderDramas();
-            renderComingSoon();
-            renderWatchlist();
-            renderOthers();
+            refreshAllDisplays();
             setupEventDelegation();
-            setupSearch();
-            setupDateAutoformat();
-            
-            const firstTabButton = document.querySelector('.nav-item');
-            switchTab('sec1', 'Sección 1: Mi Colección', firstTabButton);
+            setupGlobalSearch();
+            switchTab('sec1', 'Sección 1: Mi Colección', document.querySelector('.nav-item'));
 
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
             }
         });
 
-        function showToast(message, isSuccess = true) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.style.background = isSuccess ? '#81c784' : '#e57373';
-            toast.style.color = 'white';
-            toast.style.padding = '12px 20px';
-            toast.style.borderRadius = '12px';
-            toast.style.marginBottom = '8px';
-            toast.style.fontWeight = 'bold';
-            toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 2500);
-        }
-
         function escapeHTML(str) {
-            if(!str) return '';
-            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+            if (!str) return '';
+            return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
         function switchTab(sectionId, title, buttonEl) {
@@ -455,6 +440,92 @@
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
+        function refreshAllDisplays() {
+            renderDramas();
+            renderWatchlist();
+            renderComingSoon();
+            renderOthers();
+            updateAllCounters();
+            checkActorsDuplication();
+        }
+
+        function updateAllCounters() {
+            document.getElementById('count-sec1-total').innerText = dbDramas.length;
+            document.getElementById('count-sec1-hot').innerText = dbDramas.filter(d => d.continuation === 'yes').length;
+            document.getElementById('count-sec2-total').innerText = dbDramas.length;
+            document.getElementById('count-sec3-watch').innerText = dbWatchlist.length;
+            document.getElementById('count-sec3-coming').innerText = dbComing.length;
+
+            document.getElementById('count-sec5-peli-kd').innerText = dbOthers.filter(o => o.category === 'Película de K-Drama').length;
+            document.getElementById('count-sec5-peli-gr').innerText = dbOthers.filter(o => o.category === 'Película General').length;
+            document.getElementById('count-sec5-series').innerText = dbOthers.filter(o => o.category === 'Serie Externa').length;
+        }
+
+        function addActorField(value = '') {
+            const container = document.getElementById('actors-dynamic-container');
+            const div = document.createElement('div');
+            div.className = 'dynamic-row';
+            div.innerHTML = `<input type="text" class="actor-input" placeholder="Actor Extra" value="${escapeHTML(value)}"><button type="button" style="background:none; border:none; color:var(--danger); font-weight:bold; cursor:pointer;" onclick="this.parentElement.remove()">×</button>`;
+            container.appendChild(div);
+        }
+
+        function getActorsFormValues() {
+            const inputs = document.querySelectorAll('.actor-input');
+            let list = [];
+            inputs.forEach(i => { if(i.value.trim()) list.push(i.value.trim()); });
+            return list;
+        }
+
+        function addSeasonField(start = '', end = '') {
+            const container = document.getElementById('seasons-dynamic-container');
+            const count = container.children.length + 1;
+            const div = document.createElement('div');
+            div.className = 'ui-card';
+            div.style = 'padding:10px; margin-bottom:8px; background:#f8fafc; position:relative;';
+            div.innerHTML = `
+                <button type="button" style="position:absolute; right:10px; top:8px; background:none; border:none; color:var(--danger); font-weight:bold; cursor:pointer;" onclick="this.parentElement.remove(); reindexSeasons();">×</button>
+                <span class="season-idx-label" style="font-size:0.8rem; font-weight:bold; color:var(--primary-dark);">Temporada ${count}</span>
+                <div class="dynamic-row" style="margin-top:4px;">
+                    <input type="text" class="season-start" placeholder="Estreno" value="${escapeHTML(start)}">
+                    <input type="text" class="season-end" placeholder="Finalización" value="${escapeHTML(end)}">
+                </div>
+            `;
+            container.appendChild(div);
+            setupDateFormats();
+        }
+
+        function reindexSeasons() {
+            document.querySelectorAll('.season-idx-label').forEach((label, i) => {
+                label.innerText = `Temporada ${i + 1}`;
+            });
+        }
+
+        function getSeasonsFormValues() {
+            const cards = document.querySelectorAll('#seasons-dynamic-container .ui-card');
+            let list = [];
+            cards.forEach(card => {
+                const start = card.querySelector('.season-start').value.trim();
+                const end = card.querySelector('.season-end').value.trim();
+                if(start || end) {
+                    list.push({ start: start || 'S/D', end: end || 'S/D' });
+                }
+            });
+            return list;
+        }
+
+        function setupDateFormats() {
+            document.querySelectorAll('.season-start, .season-end').forEach(input => {
+                if(input.dataset.bound) return;
+                input.dataset.bound = true;
+                input.addEventListener('input', (e) => {
+                    let v = e.target.value.replace(/\D/g, '');
+                    if (v.length > 2 && v.length <= 4) v = v.slice(0,2) + '/' + v.slice(2);
+                    else if (v.length > 4) v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4,6);
+                    e.target.value = v;
+                });
+            });
+        }
+
         function initStarsPicker() {
             const picker = document.getElementById('stars-picker');
             picker.innerHTML = '';
@@ -464,6 +535,7 @@
             picker.addEventListener('click', (e) => {
                 if(e.target.classList.contains('star-btn')) setRating(parseInt(e.target.dataset.star));
             });
+            setupDateFormats();
         }
 
         function setRating(rating) {
@@ -474,276 +546,396 @@
             });
         }
 
-        function setupDateAutoformat() {
-            [document.getElementById('start-date'), document.getElementById('end-date')].forEach(input => {
-                input.addEventListener('input', function(e) {
-                    let valores = e.target.value.replace(/\D/g, '');
-                    if (valores.length > 2 && valores.length <= 4) {
-                        valores = valores.slice(0, 2) + '/' + valores.slice(2);
-                    } else if (valores.length > 4) {
-                        valores = valores.slice(0, 2) + '/' + valores.slice(2, 4) + '/' + valores.slice(4, 6);
-                    }
-                    e.target.value = valores;
-                });
-            });
-        }
-
-        // REGISTRO DE K-DRAMAS CON SOPORTE PARA ORDEN CON CONTINUACIÓN ("HOT")
         document.getElementById('drama-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            if(currentRating === 0) { showToast('Por favor dale una calificación.', false); return; }
+            if(currentRating === 0) { alert('Asigna una calificación en estrellas.'); return; }
             
             const editId = document.getElementById('edit-id').value;
             const file = document.getElementById('img-input').files[0];
-            
-            const titleValue = document.getElementById('title').value;
-            const actor1Value = document.getElementById('actor1').value;
-            const actor2Value = document.getElementById('actor2').value;
-            const startValue = document.getElementById('start-date').value || 'S/D';
-            const endValue = document.getElementById('end-date').value || 'S/D';
-            const summaryValue = document.getElementById('summary').value || 'Sin resumen.';
+            const titleValue = document.getElementById('title').value.trim();
+            const actorsList = getActorsFormValues();
+            const seasonsList = getSeasonsFormValues();
             const continuationValue = document.getElementById('has-continuation').value;
+            const summaryValue = document.getElementById('summary').value.trim() || 'Sin comentarios.';
 
-            const saveProcess = (base64Img) => {
+            if(seasonsList.length === 0) { seasonsList.push({start: 'S/D', end: 'S/D'}); }
+
+            const executeSave = (imgBase64) => {
                 if(editId) {
                     const idx = dbDramas.findIndex(d => d.id == editId);
                     if(idx !== -1) {
                         dbDramas[idx].title = titleValue;
-                        dbDramas[idx].actor1 = actor1Value;
-                        dbDramas[idx].actor2 = actor2Value;
-                        dbDramas[idx].startDate = startValue;
-                        dbDramas[idx].endDate = endValue;
+                        dbDramas[idx].actors = actorsList;
+                        dbDramas[idx].seasons = seasonsList;
+                        dbDramas[idx].continuation = continuationValue;
                         dbDramas[idx].summary = summaryValue;
                         dbDramas[idx].rating = currentRating;
-                        dbDramas[idx].continuation = continuationValue;
-                        if(base64Img) dbDramas[idx].image = base64Img;
+                        if(imgBase64) dbDramas[idx].image = imgBase64;
                     }
-                    showToast("¡K-Drama modificado!");
                     document.getElementById('edit-id').value = "";
                     document.getElementById('form-heading').innerText = "📝 Añadir Nuevo K-Drama Visto";
                     document.getElementById('btn-cancel-edit').style.display = "none";
                 } else {
-                    if(!file) { showToast('Por favor sube una imagen de portada.', false); return; }
+                    if(!file) { alert('Debes agregar una imagen de portada.'); return; }
                     dbDramas.push({
                         id: Date.now(),
                         title: titleValue,
-                        actor1: actor1Value,
-                        actor2: actor2Value,
-                        startDate: startValue,
-                        endDate: endValue,
+                        actors: actorsList,
+                        seasons: seasonsList,
+                        continuation: continuationValue,
                         summary: summaryValue,
                         rating: currentRating,
-                        continuation: continuationValue,
-                        image: base64Img,
-                        themeColor: '#7e57c2'
+                        image: imgBase64 || ''
                     });
-                    showToast("¡Añadido a tu colección!");
                 }
-                localStorage.setItem('kd_data_dramas', JSON.stringify(dbDramas));
-                renderDramas();
-                document.getElementById('drama-form').reset();
-                setRating(0);
+                localStorage.setItem('kd_db_ultimate_dramas', JSON.stringify(dbDramas));
+                refreshAllDisplays();
+                resetMainForm();
             };
 
             if(file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
+                const r = new FileReader();
+                r.onload = function(evt) {
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
-                        canvas.width = 100; canvas.height = img.height * (100 / img.width);
+                        canvas.width = 110; canvas.height = img.height * (110 / img.width);
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        saveProcess(canvas.toDataURL('image/jpeg', 0.4));
+                        executeSave(canvas.toDataURL('image/jpeg', 0.5));
                     };
                     img.src = evt.target.result;
                 };
-                reader.readAsDataURL(file);
+                r.readAsDataURL(file);
             } else {
-                saveProcess(null);
+                executeSave(null);
             }
         });
+
+        function resetMainForm() {
+            document.getElementById('drama-form').reset();
+            document.getElementById('edit-id').value = "";
+            document.getElementById('actors-dynamic-container').innerHTML = `
+                <div class="dynamic-row"><input type="text" class="actor-input" required placeholder="Actor Principal 1"></div>
+                <div class="dynamic-row"><input type="text" class="actor-input" required placeholder="Actor Principal 2"></div>
+            `;
+            document.getElementById('seasons-dynamic-container').innerHTML = `
+                <div class="ui-card" style="padding:10px; margin-bottom:8px; background:#f8fafc;">
+                    <span style="font-size:0.8rem; font-weight:bold; color:var(--primary-dark);">Temporada 1</span>
+                    <div class="dynamic-row" style="margin-top:4px;">
+                        <input type="text" class="season-start" placeholder="Estreno">
+                        <input type="text" class="season-end" placeholder="Finalización">
+                    </div>
+                </div>
+            `;
+            setRating(0);
+            setupDateFormats();
+        }
+
+        function cancelMainEdit() {
+            resetMainForm();
+            document.getElementById('form-heading').innerText = "📝 Añadir Nuevo K-Drama Visto";
+            document.getElementById('btn-cancel-edit').style.display = "none";
+        }
 
         function renderDramas() {
             const container = document.getElementById('kdrama-display');
             container.innerHTML = '';
 
-            // LÓGICA DE ORDENAMIENTO: Continuaciones primero (Hot), luego el resto ordenados por año descendente
-            const sortedDramas = [...dbDramas].sort((a, b) => {
-                const aCont = a.continuation === 'yes' ? 1 : 0;
-                const bCont = b.continuation === 'yes' ? 1 : 0;
-                if (bCont !== aCont) return bCont - aCont; 
-                
-                // Si ambos son iguales, ordenar por año sacado de la fecha de inicio
-                const yearA = parseInt(a.startDate.replace(/\D/g, '').slice(-2)) || 0;
-                const yearB = parseInt(b.startDate.replace(/\D/g, '').slice(-2)) || 0;
-                return yearB - yearA;
+            const sorted = [...dbDramas].sort((a, b) => {
+                const ac = a.continuation === 'yes' ? 1 : 0;
+                const bc = b.continuation === 'yes' ? 1 : 0;
+                if(bc !== ac) return bc - ac;
+                const ya = a.seasons && a.seasons[0] ? a.seasons[0].start : '';
+                const yb = b.seasons && b.seasons[0] ? b.seasons[0].start : '';
+                return yb.localeCompare(ya);
             });
 
-            if(sortedDramas.length === 0) {
-                container.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--text-muted);">Tu colección está vacía.</p>';
+            if(sorted.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--text-muted); padding:20px;">Tu colección de K-Dramas está vacía.</p>';
                 return;
             }
 
-            sortedDramas.forEach(drama => {
-                const isHot = drama.continuation === 'yes' ? `<span class="top-badge hot-status">🔄 Continuación</span>` : '';
+            sorted.forEach(d => {
+                const isHot = d.continuation === 'yes' ? `<span class="top-badge hot-status">🔄 Continuación</span>` : '';
+                let seasonsHTML = '';
+                if(d.seasons) {
+                    d.seasons.forEach((s, idx) => {
+                        seasonsHTML += `<span class="season-mini-pill">T${idx+1}: ${escapeHTML(s.start)} al ${escapeHTML(s.end)}</span>`;
+                    });
+                }
+                let actorsHTML = '';
+                if(d.actors) {
+                    d.actors.forEach(act => { actorsHTML += `<span class="actor-mini-pill">🎭 ${escapeHTML(act)}</span>`; });
+                }
+
                 container.innerHTML += `
-                    <div class="kdrama-item">
+                    <div class="kdrama-item" data-global-title="${escapeHTML(d.title).toLowerCase()}" data-global-actor="${escapeHTML(d.actors ? d.actors.join(' ') : '').toLowerCase()}">
                         <div class="card-actions">
-                            <button class="action-btn btn-edit-card" data-id="${drama.id}">✏️</button>
-                            <button class="action-btn btn-delete-card" data-id="${drama.id}">×</button>
+                            <button class="action-btn btn-copy-card" data-id="${d.id}" title="Copiar Ficha">📋</button>
+                            <button class="action-btn btn-edit-card" data-id="${d.id}">✏️</button>
+                            <button class="action-btn btn-delete-card" data-id="${d.id}">×</button>
                         </div>
-                        <img src="${drama.image || ''}">
+                        <img src="${d.image || ''}" alt="Póster">
                         <div class="kdrama-info">
-                            <h3 style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">${escapeHTML(drama.title)} ${isHot}</h3>
-                            <div class="kdrama-dates">📅 ${escapeHTML(drama.startDate)} a ${escapeHTML(drama.endDate)}</div>
-                            <div class="kdrama-actors">🎭 ${escapeHTML(drama.actor1)} • ${escapeHTML(drama.actor2)}</div>
-                            <div class="kdrama-stars">${'★'.repeat(drama.rating)}${'☆'.repeat(10-drama.rating)}</div>
-                            <div class="kdrama-summary">${escapeHTML(drama.summary)}</div>
+                            <h3 style="display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin-right:65px;">${escapeHTML(d.title)} ${isHot}</h3>
+                            <div class="season-badge-container">${seasonsHTML}</div>
+                            <div class="actor-tag-container">${actorsHTML}</div>
+                            <div class="kdrama-stars">${'★'.repeat(d.rating)}${'☆'.repeat(10-d.rating)}</div>
+                            <div class="kdrama-summary">${escapeHTML(d.summary)}</div>
                         </div>
                     </div>
                 `;
             });
-            renderTopList();
+            renderRankingsPanel();
         }
 
-        // CONTROL DE FORMULARIO DE NUEVA SECCIÓN "OTROS"
+        function renderRankingsPanel() {
+            const topContainer = document.getElementById('top-list-20');
+            const sortedTop = [...dbDramas].sort((a,b) => b.rating - a.rating).slice(0, 20);
+            
+            topContainer.innerHTML = sortedTop.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">Aún no hay suficientes puntuaciones.</p>' : '';
+            sortedTop.forEach((d, i) => {
+                topContainer.innerHTML += `
+                    <div class="flex-row-item">
+                        <span><span class="top-badge gold">#${i+1}</span> <b>${escapeHTML(d.title)}</b></span>
+                        <span style="color:var(--accent-yellow); font-weight:bold;">★ ${d.rating}/10</span>
+                    </div>
+                `;
+            });
+
+            const actorsContainer = document.getElementById('top-actors-list');
+            actorsContainer.innerHTML = '';
+            
+            let mapAct = {};
+            dbDramas.forEach(d => {
+                if (d.actors && Array.isArray(d.actors)) {
+                    d.actors.forEach(a => {
+                        if (typeof a === 'string') {
+                            const cleanName = a.trim();
+                            if (cleanName !== "") {
+                                mapAct[cleanName] = (mapAct[cleanName] || 0) + 1;
+                            }
+                        }
+                    });
+                }
+            });
+
+            const sortedActors = Object.keys(mapAct).sort((a,b) => mapAct[b] - mapAct[a]);
+            if(sortedActors.length === 0) {
+                actorsContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Sin actores registrados aún.</p>';
+                return;
+            }
+
+            sortedActors.forEach(act => {
+                const count = mapAct[act];
+                let level = 'Principiante 🎭';
+                if(count >= 8) level = 'Leyenda Absoluta 🔥';
+                else if(count >= 5) level = 'Favorito Consagrado ⭐';
+                else if(count >= 3) level = 'Frecuente 🎬';
+
+                actorsContainer.innerHTML += `
+                    <div class="flex-row-item">
+                        <span><b>${escapeHTML(act)}</b></span>
+                        <span style="font-size:0.8rem; color:var(--primary-dark); font-weight:700;">${count} visto(s) (${level})</span>
+                    </div>
+                `;
+            });
+        }
+
+        function dismissDedupAlert() {
+            isDedupDismissed = true;
+            document.getElementById('dedup-box').style.display = 'none';
+        }
+
+        function checkActorsDuplication() {
+            const alertBox = document.getElementById('dedup-box');
+            if (isDedupDismissed) return; 
+
+            const alertText = document.getElementById('dedup-text');
+            let list = [];
+            dbDramas.forEach(d => { if(d.actors) d.actors.forEach(a => { if(a && a.trim()) list.push(a.trim()); }); });
+            
+            let uniqueList = [...new Set(list)];
+            let conflictA = '', conflictB = '';
+
+            for(let i=0; i<uniqueList.length; i++) {
+                for(let j=i+1; j<uniqueList.length; j++) {
+                    let n1 = uniqueList[i].toLowerCase().replace(/[^a-z0-9]/g, '');
+                    let n2 = uniqueList[j].toLowerCase().replace(/[^a-z0-9]/g, '');
+                    if(n1 === n2 || (n1.includes(n2) && Math.abs(n1.length - n2.length) <= 3) || (n2.includes(n1) && Math.abs(n2.length - n1.length) <= 3)) {
+                        conflictA = uniqueList[i];
+                        conflictB = uniqueList[j];
+                        break;
+                    }
+                }
+                if(conflictA) break;
+            }
+
+            if(conflictA && conflictB) {
+                alertText.innerText = `Detectamos que los nombres "${conflictA}" y "${conflictB}" se parecen mucho en tus registros. ¿Deseas unificarlos en una sola estadística?`;
+                alertBox.style.display = 'block';
+                document.getElementById('dedup-action-btn').onclick = () => {
+                    dbDramas.forEach(d => {
+                        if(d.actors) {
+                            d.actors = d.actors.map(a => (a && a.trim() === conflictB) ? conflictA : a);
+                        }
+                    });
+                    localStorage.setItem('kd_db_ultimate_dramas', JSON.stringify(dbDramas));
+                    refreshAllDisplays();
+                    alertBox.style.display = 'none';
+                    alert('¡Nombres combinados con éxito!');
+                };
+            } else {
+                alertBox.style.display = 'none';
+            }
+        }
+
+        /* SECCIÓN OTROS CONTENIDOS */
         document.getElementById('other-content-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            dbOthers.push({
-                id: Date.now(),
-                title: document.getElementById('other-title').value,
-                category: document.getElementById('other-category').value,
-                rating: document.getElementById('other-rating').value,
-                notes: document.getElementById('other-notes').value || 'Sin notas.'
-            });
-            localStorage.setItem('kd_data_others', JSON.stringify(dbOthers));
-            renderOthers();
-            document.getElementById('other-content-form').reset();
-            showToast("¡Registrado correctamente!");
+            const editId = document.getElementById('edit-id-other').value;
+            const file = document.getElementById('other-img-input').files[0];
+            
+            const titleValue = document.getElementById('other-title').value.trim();
+            const catValue = document.getElementById('other-category').value;
+            const ratingValue = parseInt(document.getElementById('other-rating').value);
+            const notesValue = document.getElementById('other-notes').value.trim() || 'Sin notas.';
+
+            const saveOther = (img64) => {
+                if(editId) {
+                    const idx = dbOthers.findIndex(o => o.id == editId);
+                    if(idx !== -1) {
+                        dbOthers[idx].title = titleValue;
+                        dbOthers[idx].category = catValue;
+                        dbOthers[idx].rating = ratingValue;
+                        dbOthers[idx].notes = notesValue;
+                        if(img64) dbOthers[idx].image = img64;
+                    }
+                    document.getElementById('edit-id-other').value = "";
+                    document.getElementById('form-heading-other').innerText = "🍿 Registrar Contenido Externo";
+                    document.getElementById('btn-cancel-other').style.display = "none";
+                } else {
+                    dbOthers.push({
+                        id: Date.now(),
+                        title: titleValue,
+                        category: catValue,
+                        rating: ratingValue,
+                        notes: notesValue,
+                        image: img64 || ''
+                    });
+                }
+                localStorage.setItem('kd_db_ultimate_others', JSON.stringify(dbOthers));
+                refreshAllDisplays();
+                document.getElementById('other-content-form').reset();
+            };
+
+            if(file) {
+                const r = new FileReader();
+                r.onload = function(evt) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 70; canvas.height = img.height * (70 / img.width);
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        saveOther(canvas.toDataURL('image/jpeg', 0.4));
+                    };
+                    img.src = evt.target.result;
+                };
+                r.readAsDataURL(file);
+            } else {
+                saveOther(null);
+            }
         });
+
+        function cancelOtherEdit() {
+            document.getElementById('other-content-form').reset();
+            document.getElementById('edit-id-other').value = "";
+            document.getElementById('form-heading-other').innerText = "🍿 Registrar Contenido Externo";
+            document.getElementById('btn-cancel-other').style.display = "none";
+        }
 
         function renderOthers() {
             const container = document.getElementById('other-contents-display');
-            container.innerHTML = dbOthers.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">No hay películas o series externas registradas.</p>' : '';
-            
-            [...dbOthers].reverse().forEach(item => {
+            container.innerHTML = '';
+
+            const sortedOthers = [...dbOthers].sort((a,b) => {
+                if(b.rating !== a.rating) return b.rating - a.rating;
+                return a.title.localeCompare(b.title);
+            });
+
+            if(sortedOthers.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:15px;">No hay registros de películas o series externas.</p>';
+                return;
+            }
+
+            sortedOthers.forEach(item => {
+                const imgTag = item.image ? `<img src="${item.image}" alt="Portada">` : `<div style="width:70px; height:95px; background:#edf2f7; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">🎬</div>`;
                 container.innerHTML += `
-                    <div class="other-item">
-                        <button data-id="${item.id}" class="other-del-btn" style="position:absolute; right:12px; top:12px; background:none; border:none; color:var(--danger); font-weight:bold; cursor:pointer; font-size:1.2rem;">×</button>
-                        <span class="other-type-badge">${item.category}</span>
-                        <h3 style="margin:4px 0; font-size:1.15rem;">${escapeHTML(item.title)}</h3>
-                        <div style="color:var(--accent-yellow); margin-bottom:6px;">${'★'.repeat(item.rating)}</div>
-                        <p style="margin:0; font-size:0.85rem; color:#546e7a;">${escapeHTML(item.notes)}</p>
+                    <div class="other-item" data-global-title="${escapeHTML(item.title).toLowerCase()}" data-global-notes="${escapeHTML(item.notes).toLowerCase()}">
+                        ${imgTag}
+                        <div style="flex:1; min-width:0;">
+                            <div style="position:absolute; right:10px; top:10px; display:flex; gap:4px;">
+                                <button data-id="${item.id}" class="action-btn btn-edit-card other-edit-trigger">✏️</button>
+                                <button data-id="${item.id}" class="action-btn btn-delete-card other-del-trigger">×</button>
+                            </div>
+                            <span style="font-size:0.7rem; background:#eceff1; padding:2px 6px; border-radius:6px; font-weight:bold; color:#455a64;">${item.category}</span>
+                            <h3 style="margin:4px 0; font-size:1.05rem; padding-right:60px;">${escapeHTML(item.title)}</h3>
+                            <div style="color:var(--accent-yellow); font-size:0.9rem; margin-bottom:4px;">${'★'.repeat(item.rating)}${'☆'.repeat(10-item.rating)}</div>
+                            <p style="margin:0; font-size:0.8rem; color:#546e7a; line-height:1.3;">${escapeHTML(item.notes)}</p>
+                        </div>
                     </div>
                 `;
             });
         }
 
-        // GESTIÓN DE ACCIONES INTERNAS (PASAR DE PENDIENTE/ESTRENO A TERMINADO)
-        function setupEventDelegation() {
-            document.getElementById('kdrama-display').addEventListener('click', (e) => {
-                const id = e.target.dataset.id;
-                if(!id) return;
-                if(e.target.classList.contains('btn-delete-card')) {
-                    if(confirm('¿Eliminar drama?')) {
-                        dbDramas = dbDramas.filter(d => d.id != id);
-                        localStorage.setItem('kd_data_dramas', JSON.stringify(dbDramas));
-                        renderDramas();
-                    }
-                } else if(e.target.classList.contains('btn-edit-card')) {
-                    const d = dbDramas.find(item => item.id == id);
-                    if(!d) return;
-                    document.getElementById('edit-id').value = d.id;
-                    document.getElementById('title').value = d.title;
-                    document.getElementById('actor1').value = d.actor1;
-                    document.getElementById('actor2').value = d.actor2;
-                    document.getElementById('start-date').value = d.startDate;
-                    document.getElementById('end-date').value = d.endDate;
-                    document.getElementById('summary').value = d.summary;
-                    document.getElementById('has-continuation').value = d.continuation || 'no';
-                    setRating(d.rating);
-                    document.getElementById('form-heading').innerText = "✍️ Editar K-Drama";
-                    document.getElementById('btn-cancel-edit').style.display = "block";
-                    switchTab('sec1', 'Sección 1: Mi Colección', document.querySelector('.nav-item'));
-                }
-            });
-
-            // ACCIÓN: PASAR DE PENDIENTES A LA COLECCIÓN PRINCIPAL
-            document.getElementById('watchlist-display').addEventListener('click', (e) => {
-                const id = e.target.dataset.id;
-                if(!id) return;
-                if(e.target.classList.contains('complete-btn')) {
-                    const item = dbWatchlist.find(w => w.id == id);
-                    document.getElementById('title').value = item.title;
-                    dbWatchlist = dbWatchlist.filter(w => w.id != id);
-                    localStorage.setItem('kd_data_watchlist', JSON.stringify(dbWatchlist));
-                    renderWatchlist();
-                    switchTab('sec1', 'Sección 1: Mi Colección', document.querySelector('.nav-item'));
-                    showToast("¡Completa la información para guardarlo!");
-                } else if(e.target.classList.contains('del-btn')) {
-                    dbWatchlist = dbWatchlist.filter(w => w.id != id);
-                    localStorage.setItem('kd_data_watchlist', JSON.stringify(dbWatchlist));
-                    renderWatchlist();
-                }
-            });
-
-            // ACCIÓN: PASAR DE ESTRENOS A LA COLECCIÓN PRINCIPAL
-            document.getElementById('coming-list').addEventListener('click', (e) => {
-                const id = e.target.dataset.id;
-                if(!id) return;
-                if(e.target.classList.contains('complete-btn')) {
-                    const item = dbComing.find(c => c.id == id);
-                    document.getElementById('title').value = item.title;
-                    dbComing = dbComing.filter(c => c.id != id);
-                    localStorage.setItem('kd_data_coming', JSON.stringify(dbComing));
-                    renderComingSoon();
-                    switchTab('sec1', 'Sección 1: Mi Colección', document.querySelector('.nav-item'));
-                    showToast("¡Completa la información para guardarlo!");
-                } else if(e.target.classList.contains('del-btn')) {
-                    dbComing = dbComing.filter(c => c.id != id);
-                    localStorage.setItem('kd_data_coming', JSON.stringify(dbComing));
-                    renderComingSoon();
-                }
-            });
-
-            document.getElementById('other-contents-display').addEventListener('click', (e) => {
-                const id = e.target.dataset.id;
-                if(e.target.classList.contains('other-del-btn') && id) {
-                    dbOthers = dbOthers.filter(o => o.id != id);
-                    localStorage.setItem('kd_data_others', JSON.stringify(dbOthers));
-                    renderOthers();
-                }
-            });
-        }
-
-        // AGREGAR CON BOTÓN DE MARCAR COMO VISTO EN LISTAS
         document.getElementById('watchlist-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            dbWatchlist.push({ id: Date.now(), title: document.getElementById('watchlist-title').value });
-            localStorage.setItem('kd_data_watchlist', JSON.stringify(dbWatchlist));
-            renderWatchlist();
+            dbWatchlist.push({ 
+                id: Date.now(), 
+                title: document.getElementById('watchlist-title').value.trim(),
+                currentChapter: 0 // Inicia en capítulo 0 por defecto
+            });
+            localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(dbWatchlist));
+            refreshAllDisplays();
             document.getElementById('watchlist-form').reset();
         });
 
         document.getElementById('coming-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            dbComing.push({ id: Date.now(), title: document.getElementById('coming-title').value, date: document.getElementById('coming-date').value });
-            localStorage.setItem('kd_data_coming', JSON.stringify(dbComing));
-            renderComingSoon();
+            dbComing.push({
+                id: Date.now(),
+                title: document.getElementById('coming-title').value.trim(),
+                date: document.getElementById('coming-date').value.trim()
+            });
+            localStorage.setItem('kd_db_ultimate_coming', JSON.stringify(dbComing));
+            refreshAllDisplays();
             document.getElementById('coming-form').reset();
         });
 
+        /* RENDER DE PENDIENTES CON CONTROL DE CAPÍTULOS INTEGRADO */
         function renderWatchlist() {
             const container = document.getElementById('watchlist-display');
-            container.innerHTML = dbWatchlist.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">No hay pendientes.</p>' : '';
+            container.innerHTML = dbWatchlist.length === 0 ? '<p style="text-align:center; color:var(--text-muted); padding:10px;">Felicidades, vas al día.</p>' : '';
+            
             dbWatchlist.forEach(item => {
+                const ch = item.currentChapter !== undefined ? item.currentChapter : 0;
                 container.innerHTML += `
-                    <div class="flex-row-item">
-                        <span>💖 <b>${escapeHTML(item.title)}</b></span>
-                        <div style="display:flex; gap:10px;">
-                            <button data-id="${item.id}" class="complete-btn" style="background:#e8f5e9; border:none; color:#2e7d32; font-weight:bold; padding:4px 8px; border-radius:6px; cursor:pointer;">✅ Terminado</button>
-                            <button data-id="${item.id}" class="del-btn" style="background:none; border:none; color:#ff5252; font-weight:bold; cursor:pointer; font-size:1.2rem;">×</button>
+                    <div class="flex-row-item" data-global-title="${escapeHTML(item.title).toLowerCase()}">
+                        <div style="display:flex; flex-direction:column; gap:4px; min-width:0; flex:1;">
+                            <span>💖 <b>${escapeHTML(item.title)}</b></span>
+                            <div>
+                                <div class="chapter-badge-control">
+                                    <button type="button" class="chapter-btn-mini btn-ch-down" data-id="${item.id}">-</button>
+                                    <span>Cap. ${ch}</span>
+                                    <button type="button" class="chapter-btn-mini btn-ch-up" data-id="${item.id}">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <button data-id="${item.id}" class="complete-btn" style="background:#e8f5e9; border:none; color:#2e7d32; font-weight:bold; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.75rem;">✅ Terminado</button>
+                            <button data-id="${item.id}" class="del-btn" style="background:none; border:none; color:#ff5252; font-weight:bold; cursor:pointer; font-size:1.1rem; padding:4px;">×</button>
                         </div>
                     </div>
                 `;
@@ -752,101 +944,241 @@
 
         function renderComingSoon() {
             const container = document.getElementById('coming-list');
-            container.innerHTML = dbComing.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">No hay estrenos.</p>' : '';
+            container.innerHTML = dbComing.length === 0 ? '<p style="text-align:center; color:var(--text-muted); padding:10px;">No hay fechas registradas.</p>' : '';
             dbComing.forEach(item => {
                 container.innerHTML += `
-                    <div class="flex-row-item">
+                    <div class="flex-row-item" data-global-title="${escapeHTML(item.title).toLowerCase()}">
                         <span>🎬 <b>${escapeHTML(item.title)}</b> <small style="color:var(--text-muted)">(${escapeHTML(item.date)})</small></span>
-                        <div style="display:flex; gap:10px;">
-                            <button data-id="${item.id}" class="complete-btn" style="background:#e8f5e9; border:none; color:#2e7d32; font-weight:bold; padding:4px 8px; border-radius:6px; cursor:pointer;">✅ Salió y lo vi</button>
-                            <button data-id="${item.id}" class="del-btn" style="background:none; border:none; color:#ff5252; font-weight:bold; cursor:pointer; font-size:1.2rem;">×</button>
+                        <div style="display:flex; gap:6px;">
+                            <button data-id="${item.id}" class="complete-coming-btn" style="background:#e8f5e9; border:none; color:#2e7d32; font-weight:bold; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:0.75rem;">✅ Salió</button>
+                            <button data-id="${item.id}" class="del-coming-btn" style="background:none; border:none; color:#ff5252; font-weight:bold; cursor:pointer; font-size:1.1rem;">×</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function renderTopList() {
-            const container = document.getElementById('top-list');
-            const top = [...dbDramas].sort((a, b) => b.rating - a.rating).slice(0, 5);
-            container.innerHTML = top.length === 0 ? '<p style="text-align:center; color:var(--text-muted);">Sin calificaciones.</p>' : '';
-            top.forEach((d, i) => {
-                container.innerHTML += `<div class="flex-row-item"><span><span class="top-badge gold">#${i+1}</span> ${escapeHTML(d.title)}</span><span style="color:var(--accent-yellow); font-weight:bold;">★ ${d.rating}</span></div>`;
+        function setupEventDelegation() {
+            document.getElementById('kdrama-display').addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
+                if(!id) return;
+
+                if(e.target.classList.contains('btn-delete-card')) {
+                    if(confirm('¿Eliminar drama definitivo?')) {
+                        dbDramas = dbDramas.filter(d => d.id != id);
+                        localStorage.setItem('kd_db_ultimate_dramas', JSON.stringify(dbDramas));
+                        refreshAllDisplays();
+                    }
+                } else if(e.target.classList.contains('btn-edit-card')) {
+                    const d = dbDramas.find(item => item.id == id);
+                    if(!d) return;
+                    
+                    document.getElementById('edit-id').value = d.id;
+                    document.getElementById('title').value = d.title;
+                    document.getElementById('has-continuation').value = d.continuation || 'no';
+                    document.getElementById('summary').value = d.summary;
+                    setRating(d.rating);
+
+                    const containerAct = document.getElementById('actors-dynamic-container');
+                    containerAct.innerHTML = '';
+                    if(d.actors && d.actors.length > 0) {
+                        d.actors.forEach((act, ix) => {
+                            if(ix < 2) {
+                                containerAct.innerHTML += `<div class="dynamic-row"><input type="text" class="actor-input" required value="${escapeHTML(act)}"></div>`;
+                            } else {
+                                addActorField(act);
+                            }
+                        });
+                    }
+
+                    const containerSeas = document.getElementById('seasons-dynamic-container');
+                    containerSeas.innerHTML = '';
+                    if(d.seasons && d.seasons.length > 0) {
+                        d.seasons.forEach((s, ix) => {
+                            if(ix === 0) {
+                                containerSeas.innerHTML += `
+                                    <div class="ui-card" style="padding:10px; margin-bottom:8px; background:#f8fafc;">
+                                        <span style="font-size:0.8rem; font-weight:bold; color:var(--primary-dark);">Temporada 1</span>
+                                        <div class="dynamic-row" style="margin-top:4px;">
+                                            <input type="text" class="season-start" placeholder="Estreno" value="${escapeHTML(s.start)}">
+                                            <input type="text" class="season-end" placeholder="Finalización" value="${escapeHTML(s.end)}">
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                addSeasonField(s.start, s.end);
+                            }
+                        });
+                    }
+                    setupDateFormats();
+
+                    document.getElementById('form-heading').innerText = "✍️ Editar Información K-Drama";
+                    document.getElementById('btn-cancel-edit').style.display = "block";
+                    switchTab('sec1', 'Sección 1: Mi Colección', document.querySelector('.nav-item'));
+                
+                } else if(e.target.classList.contains('btn-copy-card')) {
+                    const d = dbDramas.find(item => item.id == id);
+                    if(!d) return;
+                    
+                    let txtFechas = '';
+                    if(d.seasons) {
+                        d.seasons.forEach((s, idx) => {
+                            txtFechas += `\n- Temporada ${idx+1}: Estreno: ${s.start} / Finalización: ${s.end}`;
+                        });
+                    }
+                    const stringFicha = `🎬 *${d.title}*\n🎭 Actores: ${d.actors ? d.actors.join(', ') : 'S/D'}\n📅 Fechas y Temporadas:${txtFechas}\n⭐ Calificación: ${d.rating}/10`;
+                    
+                    navigator.clipboard.writeText(stringFicha).then(() => {
+                        alert('¡Ficha del K-Drama copiada al portapapeles!');
+                    }).catch(() => {
+                        alert(stringFicha);
+                    });
+                }
+            });
+
+            /* MANEJO DE CAPÍTULOS Y COMPLETADOS EN LISTA POR VER */
+            document.getElementById('watchlist-display').addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
+                
+                // Botón aumentar capítulo
+                if(e.target.classList.contains('btn-ch-up')) {
+                    const item = dbWatchlist.find(w => w.id == id);
+                    if(item) {
+                        item.currentChapter = (item.currentChapter !== undefined ? item.currentChapter : 0) + 1;
+                        localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(dbWatchlist));
+                        renderWatchlist();
+                    }
+                    return;
+                }
+
+                // Botón disminuir capítulo
+                if(e.target.classList.contains('btn-ch-down')) {
+                    const item = dbWatchlist.find(w => w.id == id);
+                    if(item) {
+                        let current = item.currentChapter !== undefined ? item.currentChapter : 0;
+                        if(current > 0) {
+                            item.currentChapter = current - 1;
+                            localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(dbWatchlist));
+                            renderWatchlist();
+                        }
+                    }
+                    return;
+                }
+
+                if(!id) return;
+
+                if(e.target.classList.contains('complete-btn')) {
+                    const item = dbWatchlist.find(w => w.id == id);
+                    document.getElementById('title').value = item.title;
+                    dbWatchlist = dbWatchlist.filter(w => w.id != id);
+                    localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(dbWatchlist));
+                    refreshAllDisplays();
+                    switchTab('sec1', 'Sección 1: Mi Colección', document.querySelector('.nav-item'));
+                    alert('Título cargado en el formulario principal. Completa sus datos y guarda.');
+                } else if(e.target.classList.contains('del-btn')) {
+                    dbWatchlist = dbWatchlist.filter(w => w.id != id);
+                    localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(dbWatchlist));
+                    refreshAllDisplays();
+                }
+            });
+
+            document.getElementById('coming-list').addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
+                if(!id) return;
+                if(e.target.classList.contains('complete-coming-btn')) {
+                    const item = dbComing.find(c => c.id == id);
+                    document.getElementById('title').value = item.title;
+                    dbComing = dbComing.filter(c => c.id != id);
+                    localStorage.setItem('kd_db_ultimate_coming', JSON.stringify(dbComing));
+                    refreshAllDisplays();
+                    switchTab('sec1', 'Sección 1: Mi Colección', document.querySelector('.nav-item'));
+                    alert('Título cargado en el formulario principal. Completa los datos.');
+                } else if(e.target.classList.contains('del-coming-btn')) {
+                    dbComing = dbComing.filter(c => c.id != id);
+                    localStorage.setItem('kd_db_ultimate_coming', JSON.stringify(dbComing));
+                    refreshAllDisplays();
+                }
+            });
+
+            document.getElementById('other-contents-display').addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
+                if(!id) return;
+                if(e.target.classList.contains('other-del-trigger')) {
+                    if(confirm('¿Borrar este contenido?')) {
+                        dbOthers = dbOthers.filter(o => o.id != id);
+                        localStorage.setItem('kd_db_ultimate_others', JSON.stringify(dbOthers));
+                        refreshAllDisplays();
+                    }
+                } else if(e.target.classList.contains('other-edit-trigger')) {
+                    const o = dbOthers.find(item => item.id == id);
+                    if(!o) return;
+                    document.getElementById('edit-id-other').value = o.id;
+                    document.getElementById('other-title').value = o.title;
+                    document.getElementById('other-category').value = o.category;
+                    document.getElementById('other-rating').value = o.rating.toString();
+                    document.getElementById('other-notes').value = o.notes;
+                    
+                    document.getElementById('form-heading-other').innerText = "✍️ Editar Contenido Externo";
+                    document.getElementById('btn-cancel-other').style.display = "block";
+                    window.scrollTo({top: document.getElementById('form-heading-other').offsetTop - 20, behavior: 'smooth'});
+                }
             });
         }
 
-        function setupSearch() {
-            document.getElementById('search-bar').addEventListener('input', (e) => {
+        function setupGlobalSearch() {
+            document.getElementById('global-search-bar').addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase().trim();
+                if(!query) {
+                    document.querySelectorAll('#kdrama-display .kdrama-item, #other-contents-display .other-item, #watchlist-display .flex-row-item, #coming-list .flex-row-item').forEach(el => {
+                        el.style.display = "";
+                    });
+                    return;
+                }
                 document.querySelectorAll('#kdrama-display .kdrama-item').forEach(item => {
-                    const txt = item.innerText.toLowerCase();
-                    item.style.display = txt.includes(query) ? "flex" : "none";
+                    const match = item.dataset.globalTitle.includes(query) || item.dataset.globalActor.includes(query);
+                    item.style.display = match ? "flex" : "none";
+                });
+                document.querySelectorAll('#watchlist-display .flex-row-item').forEach(item => {
+                    item.style.display = item.dataset.globalTitle.includes(query) ? "flex" : "none";
+                });
+                document.querySelectorAll('#coming-list .flex-row-item').forEach(item => {
+                    item.style.display = item.dataset.globalTitle.includes(query) ? "flex" : "none";
+                });
+                document.querySelectorAll('#other-contents-display .other-item').forEach(item => {
+                    const match = item.dataset.globalTitle.includes(query) || item.dataset.globalNotes.includes(query);
+                    item.style.display = match ? "flex" : "none";
                 });
             });
         }
 
-        function saveLocalStorageLocal() {
-            localStorage.setItem('kd_data_dramas', JSON.stringify(dbDramas));
-            localStorage.setItem('kd_data_coming', JSON.stringify(dbComing));
-            localStorage.setItem('kd_data_watchlist', JSON.stringify(dbWatchlist));
-            localStorage.setItem('kd_data_others', JSON.stringify(dbOthers));
-            showToast("¡Datos respaldados localmente!");
-        }
-
         function clearAllData() {
-            if(confirm('¿Borrar absolutamente todo en este celular?')) {
+            if(confirm('¿Seguro que deseas eliminar el historial completo en este celular?')) {
                 localStorage.clear();
                 location.reload();
             }
         }
 
         function exportDataApp() {
-            const documentClone = document.documentElement.cloneNode(true);
-            documentClone.querySelectorAll('.data-injector-script').forEach(s => s.remove());
-            const scriptToInject = document.createElement('script');
-            scriptToInject.classList.add('data-injector-script');
-            scriptToInject.textContent = `
-                localStorage.setItem('kd_data_dramas', JSON.stringify(${JSON.stringify(dbDramas)}));
-                localStorage.setItem('kd_data_coming', JSON.stringify(${JSON.stringify(dbComing)}));
-                localStorage.setItem('kd_data_watchlist', JSON.stringify(${JSON.stringify(dbWatchlist)}));
-                localStorage.setItem('kd_data_others', JSON.stringify(${JSON.stringify(dbOthers)}));
+            const clone = document.documentElement.cloneNode(true);
+            clone.querySelectorAll('.data-injector-script').forEach(s => s.remove());
+            const script = document.createElement('script');
+            script.classList.add('data-injector-script');
+            script.textContent = `
+                localStorage.setItem('kd_db_ultimate_dramas', JSON.stringify(${JSON.stringify(dbDramas)}));
+                localStorage.setItem('kd_db_ultimate_coming', JSON.stringify(${JSON.stringify(dbComing)}));
+                localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(${JSON.stringify(dbWatchlist)}));
+                localStorage.setItem('kd_db_ultimate_others', JSON.stringify(${JSON.stringify(dbOthers)}));
             `;
-            const body = documentClone.querySelector('body');
-            body.insertBefore(scriptToInject, body.firstChild);
+            const body = clone.querySelector('body');
+            body.insertBefore(script, body.firstChild);
             
-            const blob = new Blob([documentClone.outerHTML], { type: 'text/html' });
+            const blob = new Blob([clone.outerHTML], { type: 'text/html' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'Respaldo_K_Dramas_Pro.html';
+            a.download = 'Respaldo_K_Dramas_Ultimate.html';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-        }
-
-        function importarArchivoRespaldo(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const html = e.target.result;
-                try {
-                    const matchDramas = html.match(/'kd_data_dramas',\s*JSON\.stringify\(([\s\S]*?)\)\);/);
-                    const matchComing = html.match(/'kd_data_coming',\s*JSON\.stringify\(([\s\S]*?)\)\);/);
-                    const matchWatch = html.match(/'kd_data_watchlist',\s*JSON\.stringify\(([\s\S]*?)\)\);/);
-                    const matchOthers = html.match(/'kd_data_others',\s*JSON\.stringify\(([\s\S]*?)\)\);/);
-
-                    if (matchDramas) localStorage.setItem('kd_data_dramas', matchDramas[1]);
-                    if (matchComing) localStorage.setItem('kd_data_coming', matchComing[1]);
-                    if (matchWatch) localStorage.setItem('kd_data_watchlist', matchWatch[1]);
-                    if (matchOthers) localStorage.setItem('kd_data_others', matchOthers[1]);
-
-                    showToast("¡Copia importada! Recargando...");
-                    setTimeout(() => location.reload(), 1200);
-                } catch (err) {
-                    showToast("Error al importar.", false);
-                }
-            };
-            reader.readAsText(file);
         }
     </script>
 </body></html>
