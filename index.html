@@ -396,8 +396,14 @@
     <div id="sec4" class="section-content">
         <div style="max-width: 500px; margin: 0 auto;">
             <div class="ui-card" style="text-align: center;">
-                <h2>📦 Guardado de Respaldo</h2>
-                <button class="btn btn-success" onclick="exportDataApp()">📥 Exportar Copia de Respaldo (.html)</button>
+                <h2>📦 Gestión de Respaldo</h2>
+                <button class="btn btn-success" onclick="exportDataApp()" style="margin-bottom: 12px;">📥 Exportar Copia (.html)</button>
+                
+                <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 15px 0;">
+                
+                <label style="text-align: left; margin-bottom: 6px;">📂 Importar Historial Guardado:</label>
+                <input type="file" id="import-file-input" accept=".html" style="display: none;" onchange="importDataApp(this)">
+                <button class="btn" style="background: linear-gradient(135deg, #4fc3f7, #0288d1);" onclick="document.getElementById('import-file-input').click()">📤 Subir Archivo de Respaldo</button>
             </div>
             <div class="ui-card" style="border: 2px dashed #ff8a80; text-align: center;">
                 <h2 style="color: #ff5252;">🗑️ Restablecer Memoria</h2>
@@ -895,7 +901,7 @@
             dbWatchlist.push({ 
                 id: Date.now(), 
                 title: document.getElementById('watchlist-title').value.trim(),
-                currentChapter: 0 // Inicia en capítulo 0 por defecto
+                currentChapter: 0
             });
             localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(dbWatchlist));
             refreshAllDisplays();
@@ -914,7 +920,6 @@
             document.getElementById('coming-form').reset();
         });
 
-        /* RENDER DE PENDIENTES CON CONTROL DE CAPÍTULOS INTEGRADO */
         function renderWatchlist() {
             const container = document.getElementById('watchlist-display');
             container.innerHTML = dbWatchlist.length === 0 ? '<p style="text-align:center; color:var(--text-muted); padding:10px;">Felicidades, vas al día.</p>' : '';
@@ -1036,11 +1041,9 @@
                 }
             });
 
-            /* MANEJO DE CAPÍTULOS Y COMPLETADOS EN LISTA POR VER */
             document.getElementById('watchlist-display').addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
                 
-                // Botón aumentar capítulo
                 if(e.target.classList.contains('btn-ch-up')) {
                     const item = dbWatchlist.find(w => w.id == id);
                     if(item) {
@@ -1051,7 +1054,6 @@
                     return;
                 }
 
-                // Botón disminuir capítulo
                 if(e.target.classList.contains('btn-ch-down')) {
                     const item = dbWatchlist.find(w => w.id == id);
                     if(item) {
@@ -1164,10 +1166,10 @@
             const script = document.createElement('script');
             script.classList.add('data-injector-script');
             script.textContent = `
-                localStorage.setItem('kd_db_ultimate_dramas', JSON.stringify(${JSON.stringify(dbDramas)}));
-                localStorage.setItem('kd_db_ultimate_coming', JSON.stringify(${JSON.stringify(dbComing)}));
-                localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(${JSON.stringify(dbWatchlist)}));
-                localStorage.setItem('kd_db_ultimate_others', JSON.stringify(${JSON.stringify(dbOthers)}));
+                localStorage.setItem('kd_db_ultimate_dramas', JSON.stringify(${localStorage.getItem('kd_db_ultimate_dramas') || '[]'}));
+                localStorage.setItem('kd_db_ultimate_coming', JSON.stringify(${localStorage.getItem('kd_db_ultimate_coming') || '[]'}));
+                localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(${localStorage.getItem('kd_db_ultimate_watchlist') || '[]'}));
+                localStorage.setItem('kd_db_ultimate_others', JSON.stringify(${localStorage.getItem('kd_db_ultimate_others') || '[]'}));
             `;
             const body = clone.querySelector('body');
             body.insertBefore(script, body.firstChild);
@@ -1179,6 +1181,42 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+        }
+
+        /* FUNCIÓN DE IMPORTACIÓN RESTAURADA */
+        function importDataApp(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(e.target.result, 'text/html');
+                const scriptData = doc.querySelector('.data-injector-script');
+
+                if (scriptData) {
+                    try {
+                        // Creamos una función temporal segura para inyectar los datos en el LocalStorage
+                        const tempFn = new Function(scriptData.textContent);
+                        tempFn();
+                        
+                        // Recargamos las variables globales de la app con la nueva memoria importada
+                        dbDramas = JSON.parse(localStorage.getItem('kd_db_ultimate_dramas')) || [];
+                        dbComing = JSON.parse(localStorage.getItem('kd_db_ultimate_coming')) || [];
+                        dbWatchlist = JSON.parse(localStorage.getItem('kd_db_ultimate_watchlist')) || [];
+                        dbOthers = JSON.parse(localStorage.getItem('kd_db_ultimate_others')) || [];
+                        
+                        refreshAllDisplays();
+                        alert('¡Historial e imágenes importados con éxito! Todo está en su lugar.');
+                    } catch (err) {
+                        alert('Error al procesar el archivo. Asegúrate de subir el archivo .html correcto generado por esta app.');
+                    }
+                } else {
+                    alert('No se encontraron datos de respaldo válidos en este archivo.');
+                }
+            };
+            reader.readAsText(file);
+            input.value = ''; // Limpiar el input file
         }
     </script>
 </body></html>
