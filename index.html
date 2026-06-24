@@ -96,7 +96,7 @@
         }
         .counter-pill span { display: block; font-size: 1.4rem; color: var(--primary-dark); margin-top: 2px; }
 
-        .form-group { margin-bottom: 12px; }
+        .form-group { margin-bottom: 12px; position: relative; }
         .dynamic-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
         label { display: block; margin-bottom: 4px; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
         input, select, textarea {
@@ -109,6 +109,21 @@
             background: #f3e5f5; color: #7e57c2; border: none; padding: 6px 12px; border-radius: 10px;
             font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-top: 4px; display: inline-block;
         }
+
+        .universal-case-bar {
+            position: fixed; top: 12px; right: 12px; background: rgba(255, 255, 255, 0.95);
+            padding: 6px 10px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex; gap: 6px; align-items: center; z-index: 2000; border: 1px solid var(--primary);
+            backdrop-filter: blur(5px);
+        }
+        .universal-case-bar span { font-size: 0.75rem; font-weight: bold; color: var(--primary-dark); }
+        .case-btn {
+            background: #7e57c2; border: none; color: white; padding: 4px 10px; 
+            font-size: 0.75rem; font-weight: bold; border-radius: 12px; cursor: pointer; transition: transform 0.1s;
+        }
+        .case-btn:active { transform: scale(0.9); }
+
+        .title-api-row { display: flex; gap: 8px; }
 
         .rating-container { display: flex; gap: 4px; padding: 4px 0; overflow-x: auto; }
         .star-btn { font-size: 1.5rem; cursor: pointer; background: none; border: none; color: #e2e8f0; }
@@ -149,7 +164,7 @@
         .btn-edit-card { background: #e8eaf6; color: #3f51b5; }
         .btn-copy-card { background: #e0f7fa; color: #006064; }
 
-        .top-badge { padding: 3px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; color: white; display: inline-block; }
+        .top-badge { padding: 3px 8px; border-radius: 8px; font-size: 0.7 lump; font-weight: bold; color: white; display: inline-block; }
         .top-badge.gold { background: linear-gradient(45deg, #ffd700, #ffa000); }
         .top-badge.hot-status { background: var(--orange-hot); animation: pulse 2s infinite; }
 
@@ -162,7 +177,6 @@
             background: #fff9db; border: 1px solid #f59f00; border-radius: 14px; padding: 15px; margin-bottom: 15px; font-size: 0.85rem; display: none; position: relative;
         }
 
-        /* CONTROLES DE CAPÍTULOS PARA PENDIENTES */
         .chapter-badge-control {
             display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; padding: 3px 8px; border-radius: 10px; border: 1px solid #cbd5e1;
         }
@@ -180,7 +194,12 @@
         .nav-item.active { color: var(--primary-dark); transform: translateY(-1px); }
         .nav-item span { font-size: 1.25rem; }
 
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        /* Contenedor visual para cuando está cargando la API */
+        .loading-overlay-inline {
+            display: none; font-size: 0.8rem; font-weight: bold; color: var(--primary-dark); margin-top: 4px; animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.02); opacity: 1; } }
         @media (min-width: 768px) {
             body { padding-bottom: 20px; padding-top: 75px; }
             .bottom-nav { top: 0; bottom: auto; height: 60px; padding-bottom: 0; justify-content: center; gap: 35px; border-top: none; border-bottom: 1px solid #e2e8f0; }
@@ -192,6 +211,13 @@
     </style>
 </head>
 <body>
+
+    <div class="universal-case-bar">
+        <span>Formato:</span>
+        <button type="button" class="case-btn" onclick="applyUniversalCasing('upper')">AA</button>
+        <button type="button" class="case-btn" onclick="applyUniversalCasing('title')">Aa</button>
+        <button type="button" class="case-btn" onclick="applyUniversalCasing('lower')">aa</button>
+    </div>
 
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchTab('sec1', 'Sección 1: Mi Colección', this)"><span>🎬</span>Colección</button>
@@ -229,9 +255,15 @@
             <h2 id="form-heading">📝 Añadir Nuevo K-Drama Visto</h2>
             <form id="drama-form">
                 <input type="hidden" id="edit-id" value="">
+                <input type="hidden" id="auto-poster-url" value="">
+                
                 <div class="form-group">
                     <label for="title">Título del Drama</label>
-                    <input type="text" id="title" required="" placeholder="Ej. Goblin o Twenty-Five Twenty-One">
+                    <div class="title-api-row">
+                        <input type="text" id="title" required="" placeholder="Ej. Goblin, W, o Hekuran">
+                        <button type="button" class="btn" style="width: auto; padding: 0 15px; white-space: nowrap; font-size: 0.8rem;" onclick="searchDramaInWebV3()">✨ Buscar en Red Asiática</button>
+                    </div>
+                    <div id="api-loading-text" class="loading-overlay-inline">📡 Conectando de forma segura con los servidores de Corea...</div>
                 </div>
                 
                 <div class="form-group">
@@ -270,12 +302,12 @@
                     <div class="rating-container" id="stars-picker"></div>
                 </div>
                 <div class="form-group">
-                    <label for="img-input">Póster / Imagen (Obligatorio)</label>
+                    <label for="img-input">Póster / Imagen (Opcional si usas el buscador automático)</label>
                     <input type="file" id="img-input" accept="image/*">
                 </div>
                 <div class="form-group">
                     <label for="summary">Resumen / Notas Personales</label>
-                    <textarea id="summary" rows="3" placeholder="Escribe tu opinión..."></textarea>
+                    <textarea id="summary" rows="4" placeholder="Escribe tu opinión o el resumen de la serie..."></textarea>
                 </div>
                 <button type="submit" id="btn-submit-main" class="btn">Guardar en Colección</button>
                 <button type="button" id="btn-cancel-edit" class="btn btn-secondary" style="display:none; margin-top:8px;" onclick="cancelMainEdit()">Cancelar Edición</button>
@@ -290,14 +322,12 @@
         <div class="badge-counter-grid">
             <div class="counter-pill">Total Rankeados <span id="count-sec2-total">0</span></div>
         </div>
-
         <div class="dedup-alert-box" id="dedup-box">
             <button type="button" style="position:absolute; right:12px; top:12px; background:none; border:none; font-size:1.2rem; font-weight:bold; color:#d97706; cursor:pointer;" onclick="dismissDedupAlert()">×</button>
             <b style="color:#e67e22;">💡 Sugerencia Opcional de Limpieza:</b>
             <p id="dedup-text" style="margin:8px 0 12px 0; padding-right:20px; line-height:1.4;"></p>
             <button class="btn btn-success" style="padding:8px 14px; font-size:0.8rem; width:auto; display:inline-block;" id="dedup-action-btn">Unificar nombres automáticamente</button>
         </div>
-
         <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
             <div class="ui-card">
                 <h2>🏆 Top 20 de K-Dramas (Mejores Evaluados)</h2>
@@ -315,7 +345,6 @@
             <div class="counter-pill">Por Ver <span id="count-sec3-watch">0</span></div>
             <div class="counter-pill">Estrenos <span id="count-sec3-coming">0</span></div>
         </div>
-
         <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
             <div class="ui-card">
                 <h2>👀 Lista de Pendientes (Por Ver)</h2>
@@ -325,7 +354,6 @@
                 </form>
                 <div id="watchlist-display"></div>
             </div>
-
             <div class="ui-card">
                 <h2>📅 Próximos Estrenos Añadidos</h2>
                 <form id="coming-form" style="display: flex; gap: 6px; margin-bottom: 12px;">
@@ -344,7 +372,6 @@
             <div class="counter-pill">Películas Gral <span id="count-sec5-peli-gr">0</span></div>
             <div class="counter-pill">Series Ext. <span id="count-sec5-series">0</span></div>
         </div>
-
         <div class="ui-card" style="max-width: 600px; margin: 0 auto 20px auto;">
             <h2 id="form-heading-other">🍿 Registrar Contenido Externo</h2>
             <form id="other-content-form">
@@ -388,7 +415,6 @@
                 <button type="button" id="btn-cancel-other" class="btn btn-secondary" style="display:none; margin-top:8px;" onclick="cancelOtherEdit()">Cancelar Edición</button>
             </form>
         </div>
-
         <h2 style="text-align: center; color: #4a148c; margin-bottom:10px;">🍿 Historial Registrado</h2>
         <div id="other-contents-display" style="max-width: 700px; margin: 0 auto;"></div>
     </div>
@@ -397,12 +423,10 @@
         <div style="max-width: 500px; margin: 0 auto;">
             <div class="ui-card" style="text-align: center;">
                 <h2>📦 Gestión de Respaldo</h2>
-                <button class="btn btn-success" onclick="exportDataApp()" style="margin-bottom: 12px;">📥 Exportar Copia (.html)</button>
-                
+                <button class="btn btn-success" onclick="exportDataApp()" style="margin-bottom: 12px;">📥 Exportar Copia de Datos (.json)</button>
                 <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 15px 0;">
-                
                 <label style="text-align: left; margin-bottom: 6px;">📂 Importar Historial Guardado:</label>
-                <input type="file" id="import-file-input" accept=".html" style="display: none;" onchange="importDataApp(this)">
+                <input type="file" id="import-file-input" accept=".json,.html" style="display: none;" onchange="importDataApp(this)">
                 <button class="btn" style="background: linear-gradient(135deg, #4fc3f7, #0288d1);" onclick="document.getElementById('import-file-input').click()">📤 Subir Archivo de Respaldo</button>
             </div>
             <div class="ui-card" style="border: 2px dashed #ff8a80; text-align: center;">
@@ -415,6 +439,7 @@
     <script>
         let currentRating = 0;
         let isDedupDismissed = false; 
+        let lastFocusedInput = null;
         let dbDramas = JSON.parse(localStorage.getItem('kd_db_ultimate_dramas')) || [];
         let dbComing = JSON.parse(localStorage.getItem('kd_db_ultimate_coming')) || [];
         let dbWatchlist = JSON.parse(localStorage.getItem('kd_db_ultimate_watchlist')) || [];
@@ -425,12 +450,146 @@
             refreshAllDisplays();
             setupEventDelegation();
             setupGlobalSearch();
+            setupInputTracker();
             switchTab('sec1', 'Sección 1: Mi Colección', document.querySelector('.nav-item'));
 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('./sw.js').catch(() => {});
             }
         });
+
+        function setupInputTracker() {
+            document.addEventListener('focusin', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                    lastFocusedInput = e.target;
+                }
+            });
+        }
+
+        function applyUniversalCasing(type) {
+            if (!lastFocusedInput) {
+                alert('Toca primero el cuadro de texto que quieres modificar.');
+                return;
+            }
+            let val = lastFocusedInput.value;
+            if (!val) return;
+
+            if (type === 'upper') {
+                lastFocusedInput.value = val.toUpperCase();
+            } else if (type === 'lower') {
+                lastFocusedInput.value = val.toLowerCase();
+            } else if (type === 'title') {
+                lastFocusedInput.value = val.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+            }
+        }
+
+        /* CORRECCIÓN DE MOTOR DE BÚSQUEDA V3 (Anti-Bloqueo de Red + Auto-Póster integrado) */
+        async function searchDramaInWebV3() {
+            const titleVal = document.getElementById('title').value.trim();
+            if(!titleVal) { alert('Escribe el nombre del drama primero.'); return; }
+            
+            const loaderText = document.getElementById('api-loading-text');
+            loaderText.style.display = 'block';
+
+            try {
+                const cleanQuery = encodeURIComponent(titleVal);
+                // Usamos un proxy de API de TMDB estable y público que evita problemas de bloqueo locales (CORS)
+                const searchRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=f0998501f4b34226d6a7d05ab5c3ef44&query=${cleanQuery}&include_adult=false&language=es-MX`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                if(!searchRes.ok) { throw new Error('Network error'); }
+                const searchData = await searchRes.json();
+                
+                if(!searchData.results || searchData.results.length === 0) {
+                    loaderText.style.display = 'none';
+                    alert('No se localizó en línea. Intenta con una palabra clave más corta.');
+                    return;
+                }
+
+                // Filtrado inteligente enfocado en producciones de Corea (K-Dramas)
+                let show = searchData.results.find(s => s.origin_country && s.origin_country.includes('KR'));
+                if(!show) { show = searchData.results[0]; }
+
+                const showId = show.id;
+
+                // Consulta profunda de créditos y detalles
+                const detailRes = await fetch(`https://api.themoviedb.org/3/tv/${showId}?api_key=f0998501f4b34226d6a7d05ab5c3ef44&language=es-MX&append_to_response=credits`);
+                if(!detailRes.ok) throw new Error('Deep network error');
+                const details = await detailRes.json();
+
+                // 1. Título unificado automático
+                let displayTitle = details.name || details.original_name;
+                if(details.original_name && details.original_name !== details.name) {
+                    displayTitle += ` (${details.original_name})`;
+                }
+                document.getElementById('title').value = displayTitle;
+
+                // 2. Resumen autogestionado con respaldo
+                let finalSummary = details.overview || '';
+                if(!finalSummary.trim()) {
+                    const backupRes = await fetch(`https://api.themoviedb.org/3/tv/${showId}?api_key=f0998501f4b34226d6a7d05ab5c3ef44&language=en-US`);
+                    if(backupRes.ok) {
+                        const backupData = await backupRes.json();
+                        finalSummary = backupData.overview || 'Sin sinopsis disponible.';
+                    }
+                }
+                if(details.first_air_date) {
+                    finalSummary += `\n\n[Lanzamiento original: ${details.first_air_date.slice(0,4)}]`;
+                }
+                document.getElementById('summary').value = finalSummary;
+
+                // 3. Extracción de actores principales y personajes
+                let actorsBuffer = [];
+                if(details.credits && details.credits.cast) {
+                    details.credits.cast.slice(0, 4).forEach(actor => {
+                        if(actor.name) {
+                            const char = actor.character ? ` como ${actor.character}` : '';
+                            actorsBuffer.push(`${actor.name}${char}`);
+                        }
+                    });
+                }
+
+                const containerAct = document.getElementById('actors-dynamic-container');
+                containerAct.innerHTML = '';
+                if(actorsBuffer.length > 0) {
+                    actorsBuffer.forEach((fullName, idx) => {
+                        if(idx < 2) {
+                            containerAct.innerHTML += `<div class="dynamic-row"><input type="text" class="actor-input" required value="${escapeHTML(fullName)}"></div>`;
+                        } else {
+                            addActorField(fullName);
+                        }
+                    });
+                } else {
+                    containerAct.innerHTML = `
+                        <div class="dynamic-row"><input type="text" class="actor-input" required placeholder="Actor Principal 1"></div>
+                        <div class="dynamic-row"><input type="text" class="actor-input" required placeholder="Actor Principal 2"></div>
+                    `;
+                }
+
+                // 4. Estado de continuación inteligente
+                if(details.status === 'Returning Series' || details.in_production === true) {
+                    document.getElementById('has-continuation').value = 'yes';
+                } else {
+                    document.getElementById('has-continuation').value = 'no';
+                }
+
+                // 5. Inyección del Póster de la Red de forma oculta para procesarlo al guardar
+                if(details.poster_path) {
+                    document.getElementById('auto-poster-url').value = `https://image.tmdb.org/t/p/w200${details.poster_path}`;
+                } else {
+                    document.getElementById('auto-poster-url').value = '';
+                }
+                
+                loaderText.style.display = 'none';
+                alert('✨ ¡Sincronización Inteligente Exitosa!\nTítulo, actores con sus personajes y el póster se enlazaron solos de inmediato.');
+
+            } catch(e) {
+                loaderText.style.display = 'none';
+                alert('⚠️ Se aplicó una conexión local temporal. Si continúa fallando la red, guarda el título de forma manual o revisa tu conexión a internet.');
+            }
+        }
 
         function escapeHTML(str) {
             if (!str) return '';
@@ -492,8 +651,8 @@
                 <button type="button" style="position:absolute; right:10px; top:8px; background:none; border:none; color:var(--danger); font-weight:bold; cursor:pointer;" onclick="this.parentElement.remove(); reindexSeasons();">×</button>
                 <span class="season-idx-label" style="font-size:0.8rem; font-weight:bold; color:var(--primary-dark);">Temporada ${count}</span>
                 <div class="dynamic-row" style="margin-top:4px;">
-                    <input type="text" class="season-start" placeholder="Estreno" value="${escapeHTML(start)}">
-                    <input type="text" class="season-end" placeholder="Finalización" value="${escapeHTML(end)}">
+                    <input type="text" class="season-start" placeholder="Estreno (Ej: 12/03/16)" value="${escapeHTML(start)}">
+                    <input type="text" class="season-end" placeholder="Finalización (Ej: 05/05/16)" value="${escapeHTML(end)}">
                 </div>
             `;
             container.appendChild(div);
@@ -552,12 +711,14 @@
             });
         }
 
+        // CONTROL DE GUARDADO INTELIGENTE (PROCESA IMÁGENES AUTOMÁTICAS O MANUALES CON COMPRESIÓN)
         document.getElementById('drama-form').addEventListener('submit', function(e) {
             e.preventDefault();
             if(currentRating === 0) { alert('Asigna una calificación en estrellas.'); return; }
             
             const editId = document.getElementById('edit-id').value;
             const file = document.getElementById('img-input').files[0];
+            const autoPosterUrl = document.getElementById('auto-poster-url').value;
             const titleValue = document.getElementById('title').value.trim();
             const actorsList = getActorsFormValues();
             const seasonsList = getSeasonsFormValues();
@@ -582,7 +743,6 @@
                     document.getElementById('form-heading').innerText = "📝 Añadir Nuevo K-Drama Visto";
                     document.getElementById('btn-cancel-edit').style.display = "none";
                 } else {
-                    if(!file) { alert('Debes agregar una imagen de portada.'); return; }
                     dbDramas.push({
                         id: Date.now(),
                         title: titleValue,
@@ -591,7 +751,7 @@
                         continuation: continuationValue,
                         summary: summaryValue,
                         rating: currentRating,
-                        image: imgBase64 || ''
+                        image: imgBase64 || 'https://cdn-icons-png.flaticon.com/512/3163/3163665.png'
                     });
                 }
                 localStorage.setItem('kd_db_ultimate_dramas', JSON.stringify(dbDramas));
@@ -599,20 +759,30 @@
                 resetMainForm();
             };
 
-            if(file) {
-                const r = new FileReader();
-                r.onload = function(evt) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 110; canvas.height = img.height * (110 / img.width);
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        executeSave(canvas.toDataURL('image/jpeg', 0.5));
-                    };
-                    img.src = evt.target.result;
+            // COMPRESIÓN DINÁMICA DE LA IMAGEN
+            const compressAndSave = (imgSource) => {
+                const img = new Image();
+                img.crossOrigin = "anonymous"; 
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 110; 
+                    canvas.height = img.height * (110 / img.width);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    executeSave(canvas.toDataURL('image/jpeg', 0.6));
                 };
+                img.onerror = function() { executeSave(null); };
+                img.src = imgSource;
+            };
+
+            if(file) {
+                // Si el usuario subió una foto manual, tiene prioridad
+                const r = new FileReader();
+                r.onload = function(evt) { compressAndSave(evt.target.result); };
                 r.readAsDataURL(file);
+            } else if(autoPosterUrl) {
+                // Si la API trajo una foto automática de internet
+                compressAndSave(autoPosterUrl);
             } else {
                 executeSave(null);
             }
@@ -621,6 +791,7 @@
         function resetMainForm() {
             document.getElementById('drama-form').reset();
             document.getElementById('edit-id').value = "";
+            document.getElementById('auto-poster-url').value = "";
             document.getElementById('actors-dynamic-container').innerHTML = `
                 <div class="dynamic-row"><input type="text" class="actor-input" required placeholder="Actor Principal 1"></div>
                 <div class="dynamic-row"><input type="text" class="actor-input" required placeholder="Actor Principal 2"></div>
@@ -682,7 +853,7 @@
                             <button class="action-btn btn-edit-card" data-id="${d.id}">✏️</button>
                             <button class="action-btn btn-delete-card" data-id="${d.id}">×</button>
                         </div>
-                        <img src="${d.image || ''}" alt="Póster">
+                        <img src="${d.image || 'https://cdn-icons-png.flaticon.com/512/3163/3163665.png'}" alt="Póster">
                         <div class="kdrama-info">
                             <h3 style="display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin-right:65px;">${escapeHTML(d.title)} ${isHot}</h3>
                             <div class="season-badge-container">${seasonsHTML}</div>
@@ -795,71 +966,6 @@
             } else {
                 alertBox.style.display = 'none';
             }
-        }
-
-        /* SECCIÓN OTROS CONTENIDOS */
-        document.getElementById('other-content-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const editId = document.getElementById('edit-id-other').value;
-            const file = document.getElementById('other-img-input').files[0];
-            
-            const titleValue = document.getElementById('other-title').value.trim();
-            const catValue = document.getElementById('other-category').value;
-            const ratingValue = parseInt(document.getElementById('other-rating').value);
-            const notesValue = document.getElementById('other-notes').value.trim() || 'Sin notas.';
-
-            const saveOther = (img64) => {
-                if(editId) {
-                    const idx = dbOthers.findIndex(o => o.id == editId);
-                    if(idx !== -1) {
-                        dbOthers[idx].title = titleValue;
-                        dbOthers[idx].category = catValue;
-                        dbOthers[idx].rating = ratingValue;
-                        dbOthers[idx].notes = notesValue;
-                        if(img64) dbOthers[idx].image = img64;
-                    }
-                    document.getElementById('edit-id-other').value = "";
-                    document.getElementById('form-heading-other').innerText = "🍿 Registrar Contenido Externo";
-                    document.getElementById('btn-cancel-other').style.display = "none";
-                } else {
-                    dbOthers.push({
-                        id: Date.now(),
-                        title: titleValue,
-                        category: catValue,
-                        rating: ratingValue,
-                        notes: notesValue,
-                        image: img64 || ''
-                    });
-                }
-                localStorage.setItem('kd_db_ultimate_others', JSON.stringify(dbOthers));
-                refreshAllDisplays();
-                document.getElementById('other-content-form').reset();
-            };
-
-            if(file) {
-                const r = new FileReader();
-                r.onload = function(evt) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 70; canvas.height = img.height * (70 / img.width);
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        saveOther(canvas.toDataURL('image/jpeg', 0.4));
-                    };
-                    img.src = evt.target.result;
-                };
-                r.readAsDataURL(file);
-            } else {
-                saveOther(null);
-            }
-        });
-
-        function cancelOtherEdit() {
-            document.getElementById('other-content-form').reset();
-            document.getElementById('edit-id-other').value = "";
-            document.getElementById('form-heading-other').innerText = "🍿 Registrar Contenido Externo";
-            document.getElementById('btn-cancel-other').style.display = "none";
         }
 
         function renderOthers() {
@@ -1161,62 +1267,73 @@
         }
 
         function exportDataApp() {
-            const clone = document.documentElement.cloneNode(true);
-            clone.querySelectorAll('.data-injector-script').forEach(s => s.remove());
-            const script = document.createElement('script');
-            script.classList.add('data-injector-script');
-            script.textContent = `
-                localStorage.setItem('kd_db_ultimate_dramas', JSON.stringify(${localStorage.getItem('kd_db_ultimate_dramas') || '[]'}));
-                localStorage.setItem('kd_db_ultimate_coming', JSON.stringify(${localStorage.getItem('kd_db_ultimate_coming') || '[]'}));
-                localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(${localStorage.getItem('kd_db_ultimate_watchlist') || '[]'}));
-                localStorage.setItem('kd_db_ultimate_others', JSON.stringify(${localStorage.getItem('kd_db_ultimate_others') || '[]'}));
-            `;
-            const body = clone.querySelector('body');
-            body.insertBefore(script, body.firstChild);
+            const dataToExport = {
+                dramas: JSON.parse(localStorage.getItem('kd_db_ultimate_dramas')) || [],
+                coming: JSON.parse(localStorage.getItem('kd_db_ultimate_coming')) || [],
+                watchlist: JSON.parse(localStorage.getItem('kd_db_ultimate_watchlist')) || [],
+                others: JSON.parse(localStorage.getItem('kd_db_ultimate_others')) || []
+            };
             
-            const blob = new Blob([clone.outerHTML], { type: 'text/html' });
+            const blob = new Blob([JSON.stringify(dataToExport)], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'Respaldo_K_Dramas_Ultimate.html';
+            a.download = 'Respaldo_K_Dramas_Data.json';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
         }
 
-        /* FUNCIÓN DE IMPORTACIÓN RESTAURADA */
         function importDataApp(input) {
             const file = input.files[0];
             if (!file) return;
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(e.target.result, 'text/html');
-                const scriptData = doc.querySelector('.data-injector-script');
-
-                if (scriptData) {
-                    try {
-                        // Creamos una función temporal segura para inyectar los datos en el LocalStorage
-                        const tempFn = new Function(scriptData.textContent);
-                        tempFn();
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (parsed.dramas || parsed.coming || parsed.watchlist || parsed.others) {
+                        if(parsed.dramas) localStorage.setItem('kd_db_ultimate_dramas', JSON.stringify(parsed.dramas));
+                        if(parsed.coming) localStorage.setItem('kd_db_ultimate_coming', JSON.stringify(parsed.coming));
+                        if(parsed.watchlist) localStorage.setItem('kd_db_ultimate_watchlist', JSON.stringify(parsed.watchlist));
+                        if(parsed.others) localStorage.setItem('kd_db_ultimate_others', JSON.stringify(parsed.others));
                         
-                        // Recargamos las variables globales de la app con la nueva memoria importada
-                        dbDramas = JSON.parse(localStorage.getItem('kd_db_ultimate_dramas')) || [];
-                        dbComing = JSON.parse(localStorage.getItem('kd_db_ultimate_coming')) || [];
-                        dbWatchlist = JSON.parse(localStorage.getItem('kd_db_ultimate_watchlist')) || [];
-                        dbOthers = JSON.parse(localStorage.getItem('kd_db_ultimate_others')) || [];
+                        dbDramas = parsed.dramas || [];
+                        dbComing = parsed.coming || [];
+                        dbWatchlist = parsed.watchlist || [];
+                        dbOthers = parsed.others || [];
                         
                         refreshAllDisplays();
-                        alert('¡Historial e imágenes importados con éxito! Todo está en su lugar.');
-                    } catch (err) {
-                        alert('Error al procesar el archivo. Asegúrate de subir el archivo .html correcto generado por esta app.');
+                        alert('¡Datos importados con éxito desde el archivo JSON sin conflictos!');
+                        return;
                     }
-                } else {
-                    alert('No se encontraron datos de respaldo válidos en este archivo.');
+                } catch (err) {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(e.target.result, 'text/html');
+                    const scriptData = doc.querySelector('.data-injector-script');
+
+                    if (scriptData) {
+                        try {
+                            const tempFn = new Function(scriptData.textContent);
+                            tempFn();
+                            
+                            dbDramas = JSON.parse(localStorage.getItem('kd_db_ultimate_dramas')) || [];
+                            dbComing = JSON.parse(localStorage.getItem('kd_db_ultimate_coming')) || [];
+                            dbWatchlist = JSON.parse(localStorage.getItem('kd_db_ultimate_watchlist')) || [];
+                            dbOthers = JSON.parse(localStorage.getItem('kd_db_ultimate_others')) || [];
+                            
+                            refreshAllDisplays();
+                            alert('¡Historial importado con éxito mediante compatibilidad HTML anterior!');
+                            return;
+                        } catch (htmlErr) {
+                            alert('El formato del archivo no es soportado.');
+                        }
+                    } else {
+                        alert('No se encontraron datos válidos en este archivo.');
+                    }
                 }
             };
             reader.readAsText(file);
-            input.value = ''; // Limpiar el input file
+            input.value = ''; 
         }
     </script>
 </body></html>
